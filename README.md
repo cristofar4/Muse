@@ -1,34 +1,37 @@
-# MUSE · Perfume you can see
+# MUSE · Maison de parfum
 
-A perfume store and brand site built with plain HTML, CSS and JavaScript. There is no framework and no build step. Serve the folder from any static host (Netlify, Vercel, GitHub Pages, your own server) and it works. To preview locally, run a tiny server in the folder, for example `python3 -m http.server`, then open `http://localhost:8000`. The WebGL smoke effect needs a server; opening the file directly still works, but the hero shows a still photo instead.
+A perfume store and brand site built with plain HTML, CSS and JavaScript. There is no framework and no build step: the animation libraries are saved in `assets/vendor/`, so the site works on any static host (Netlify, Vercel, GitHub Pages, your own server).
+
+The 3D hero is an ES module, and browsers only load modules over http. To preview locally, run a small server in the folder, for example `python3 -m http.server`, then open `http://localhost:8000`. If you open `index.html` directly from disk, the site still works, but the hero shows a still photograph instead of the 3D bottle.
 
 ```
-index.html             every page of the site (views switch without reloading)
-assets/css/muse.css    design tokens, the 12 column grid, every layout, responsive rules
-assets/js/muse.js      router, navigation, animations, shop, bag, checkout, forms
-assets/js/vapor.js     the WebGL smoke effect on hero photographs
-assets/img/            photography (800 px and 1600 px versions of each image)
+index.html               every page of the site (views switch without reloading)
+assets/css/muse.css      colour tokens, type scale, every layout, responsive rules
+assets/js/muse.js        router, island navigation, scroll scenes, shop, bag, checkout, forms
+assets/js/hero3d.js      the real time glass bottle in the hero (Three.js)
+assets/vendor/           three.module.min.js r160, GSAP 3.12.5 with ScrollTrigger, Lenis 1.1.13
+assets/img/              photography (800 px and 1600 px versions of each image)
 ```
 
-## The idea
+## Look
 
-You cannot smell a screen, so the whole site tries to make scent visible. One typeface only, **Fraunces**, because its weight and softness can be animated: letters melt, swell and breathe.
+- **One typeface:** Bodoni Moda, from Google Fonts. Its optical size axis lets the same family be a hairline display face at 200 px and a readable text face at 16 px, so nothing else is mixed in. To try another family, change the font link in `index.html` and `--f` in `muse.css`.
+- **Colour:** oxblood and wine (`#1a0508` to `#7a2131`), cream paper (`#f4ede3`) and champagne gold (`#c9a063`). All colours are tokens at the top of `muse.css`.
 
-## Signature interactions
+## Signature moments
 
 | Where | What happens |
 | --- | --- |
-| Navigation | The menu is a row of perfume **blotter strips** hanging from the top of the screen. They sway when you scroll or brush past them, a stain of colour wicks up the paper when you hover, and the current page stays stained. They tuck away while you read. On phones you **pull the strip down** to open the menu, which unrolls like paper. |
-| Logo | MUSE **breathes**: each letter slowly swells and softens, then thins again. |
-| Preloader | The word *Inhale* swells from a hairline to heavy and soft, then flips to *Exhale* and evaporates. Shown once per visit. |
-| Hero | A real photograph of smoke rendered in WebGL. Wherever the cursor moves, the image **rises like vapor**. The giant MUSE inverts the smoke inside its letters, and the letters swell toward your cursor. |
-| Headings | Every big title **condenses out of vapor**: heavy, soft, blurred letters settle into thin sharp glass. |
-| Product photos | Hover a bottle and the cursor **uncovers what the scent is made of** (resin under the amber, jasmine under the floral). |
-| Hold to smell | Press and hold a button, or the space bar. A blurred photograph sharpens, smoke rises, and the fragrance plays out in three acts. There is also a "let it play" option for anyone who cannot hold. |
-| Anatomy of a scent | Scrolling down walks you sideways through five raw materials, with their botanical names. |
-| Translate a memory | Choose a memory ("Candles in an old church") and a loudness, and get a fragrance, its formula and how to wear it. |
-| Page changes | Pages swap behind a burst of dark mist that sprays from where you clicked, then evaporates. |
-| Bag | Adding a product flies a drop of its colour into the Bag strip, which fills with colour as the bag grows. |
+| Preloader | MUSE draws itself while the bottle and fonts load, then a wine curtain sweeps away. |
+| Navigation | A floating glass **island**. Hover Collection or Notes and it morphs, with spring physics, into a panel showing the bottles or the notes. A liquid highlight follows the pointer between links, a gold hairline fills as you scroll, and the island turns light or dark to match the section under it. On phones it opens into the full menu. |
+| Hero | A **real time 3D glass flask** with liquid inside. Light refracts through the glass, bending the giant scent name and the photographs behind it. Scrolling turns the bottle from Ambre to Fleur to Cèdre: the liquid, the light, the word and the photographs all change. At the end the camera dives into the liquid. Drag to spin the bottle, click to spray. |
+| Manifesto | The words light up one by one as you scroll, with small photographs set inside the sentence. |
+| Collection | The page pins and the six bottles slide sideways. Hover a bottle to see what it is made of. |
+| Notes | The three acts of a fragrance as cards that stack on top of each other. |
+| Ritual | A photograph opens from a small window to the full screen. |
+| Translate a memory | Choose a memory ("Candles in an old church") and how loud you want it, and get a fragrance, its formula and how to wear it. |
+| Page changes | A wine curtain with a wave edge carries the name of the next page across the screen. |
+| Bag | Adding a product flies its photograph into the bag in the island. |
 
 ## Pages
 
@@ -36,19 +39,25 @@ Home, Shop (filters and sorting), seven product pages (`#ambre`, `#fleur`, `#ced
 
 ## Before going live
 
-- **Checkout is a demo.** It validates the form and shows a confirmation, but takes no payment. Connect Stripe, Shopify Buy Button, Snipcart or similar in the checkout section of `muse.js`. The page says so on screen.
+- **Checkout is a demo.** It checks the form and shows a confirmation, but takes no payment. Connect Stripe, Shopify Buy Button, Snipcart or similar in the checkout section of `muse.js`. The page says so on screen.
 - **Contact and newsletter forms** need an endpoint. Search `muse.js` for *Connect your form endpoint* and *Connect your mailing list provider*.
 - **Products, prices and copy** live in the `PRODUCTS` list near the top of `muse.js`. Sizes are worked out from the 50 ml price.
+- **Hero scents** (colours, words and photographs for each scent in the 3D hero) live in `HERO_SCENTS` in `muse.js`.
 - **Contact details** on the Contact page are placeholders (`concierge@muse.example`).
 - **Your own photography** can replace any file in `assets/img/`. Keep the same names, or update the `img` and `reveal` fields in `PRODUCTS`.
 
 ## Accessibility and performance
 
-- Native `<dialog>` for search, bag, menu and stories, so focus is trapped and Escape closes them.
-- Every hold or drag interaction has a keyboard or click alternative.
-- `prefers-reduced-motion` turns off the preloader, WebGL, melting type, sway and parallax.
-- One shared animation loop sleeps when nothing moves. WebGL and the smoke canvas pause when they are off screen.
+- Native `<dialog>` for search, bag and stories, so focus is trapped and Escape closes them.
+- `prefers-reduced-motion` turns off the preloader, the 3D hero (a photograph is shown instead), smooth scrolling, the custom cursor and magnetic buttons.
+- The 3D hero stops rendering when it is off screen or another page is open, and on phones it uses a lower pixel ratio.
 - The bag is kept in `localStorage`.
+
+## Licences
+
+- Three.js and Lenis: MIT.
+- GSAP and ScrollTrigger: the GSAP standard licence, free for commercial use.
+- Bodoni Moda: SIL Open Font License.
 
 ## Photo credits
 
@@ -62,10 +71,11 @@ All photographs are from [Unsplash](https://unsplash.com) under the Unsplash Lic
 | bottle-frost | Angélica Echeverry |
 | bottle-ink | Kier in Sight Archives |
 | bottle-prism | JC Media |
+| hand-clear | Content Pixie |
 | jasmine-night | Irina Iriser |
 | jasmine-star | Chinmay Sethi |
 | jasmine-branch | Liana S |
 | cedar-bark | Wyxina Tresse |
 | bark-grey | Chris Lawton |
 | resin | Alexandr Popadin |
-| bottle-sun (photo-1622618991746), dropper-leaf (photo-1617897903246), lemons (photo-1528632735386), citrus-dried (photo-1569442130407) | Unsplash contributors |
+| bottle-sun (photo-1622618991746), dropper-leaf (photo-1617897903246), lemons (photo-1528632735386), citrus-dried (photo-1569442130407), amber-satin (photo-1733660227163), crystal-flowers (photo-1615108395437), gold-glass (photo-1783431412504) | Unsplash contributors |
