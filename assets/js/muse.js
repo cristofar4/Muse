@@ -1130,7 +1130,7 @@
       if (href === '#app') { e.preventDefault(); $('#app').focus(); return; }
       e.preventDefault();
       const dlg = t.closest('dialog');
-      const go = () => { if (location.hash === href) navigate(parse(href)); else { history.pushState(null, '', href); navigate(parse(href)); } };
+      const go = () => { if (location.hash === href) navigate(parse(href)); else { try { history.pushState(null, '', href); } catch (e) { location.hash = href; return; } navigate(parse(href)); } };
       if (dlg) closeDialog(dlg, go); else go();
     });
     addEventListener('popstate', () => navigate(parse(location.hash)));
