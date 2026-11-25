@@ -1,47 +1,71 @@
-# MUSE · Eau de parfum
+# MUSE · Perfume you can see
 
-A single-page storefront for MUSE, built with plain HTML, CSS and JavaScript. There are no dependencies and no build step: open `index.html` in a browser, or serve the folder from any static host.
+A perfume store and brand site built with plain HTML, CSS and JavaScript. There is no framework and no build step. Serve the folder from any static host (Netlify, Vercel, GitHub Pages, your own server) and it works. To preview locally, run a tiny server in the folder, for example `python3 -m http.server`, then open `http://localhost:8000`. The WebGL smoke effect needs a server; opening the file directly still works, but the hero shows a still photo instead.
 
 ```
-index.html            page structure and copy
-assets/css/muse.css   design tokens, layout, animation, responsive rules
-assets/js/muse.js     drawn artwork and every interaction
-assets/favicon.svg
+index.html             every page of the site (views switch without reloading)
+assets/css/muse.css    design tokens, the 12 column grid, every layout, responsive rules
+assets/js/muse.js      router, navigation, animations, shop, bag, checkout, forms
+assets/js/vapor.js     the WebGL smoke effect on hero photographs
+assets/img/            photography (800 px and 1600 px versions of each image)
 ```
 
-## What's on the page
+## The idea
 
-**The Flacon bar (navigation)**
-- The **MUSE logo fills with gold liquid** as you scroll, so the wordmark doubles as a progress bar. Hovering the logo makes the surface swirl faster.
-- A **bead of perfume flows between links**. Its leading edge moves first and the trailing edge catches up, and when it settles it drips. When you aren't hovering, it rests under the section you're reading.
-- Link text **evaporates**: each letter rises and blurs away while an italic version condenses in its place.
-- **Shop opens the Perfumer's Organ**, a shelf of raw-material vials with the three bottles in front. Hover a bottle to read its mood, notes and price.
-- The **bag icon is a tiny flacon** that fills as you add items. Added bottles fly into it along an arc.
-- The bar switches between light and dark to match the section beneath it. It hides while you scroll down and comes back when you scroll up.
-- **✦ Menu** opens a full-screen menu that pours down like liquid.
+You cannot smell a screen, so the whole site tries to make scent visible. One typeface only, **Fraunces**, because its weight and softness can be animated: letters melt, swell and breathe.
 
-**Sections**
-1. **Hero.** The giant MUSE letters, a moon and a glass bottle drawn in code. Drag the bottle to swirl it and the liquid sloshes with real spring physics. Tabs switch between Ambre, Fleur and Cèdre; liquid colour, cap, label, ingredients and background all change.
-2. **Find your signature.** Product cards in warm, sunlit scenes, each with Quick view (sizes, notes) and Add to bag.
-3. **A fragrance, unfolding.** A "time on skin" slider. Drag from spray to 8 hours and watch the top, heart and base notes fade in and out, with intensity curves to match.
-4. **What draws you in?** A three-question scent finder. A colour aura and the bottle's liquid follow each answer, and the result can be added to the bag. Keys 1 to 3 answer.
-5. **The house.** An animated atelier: a pipette lets one drop fall into a beaker.
-6. **Gifting.** The gift box lid lifts when the box scrolls into view. "Write the card" previews the note on the card inside.
-7. **Journal and questions.** Articles and an accordion FAQ.
-8. **Footer.** A newsletter form that stamps a wax seal when you subscribe.
+## Signature interactions
 
-Also: a one-drop preloader (once per visit), a faint gold *sillage* trail behind the mouse, magnetic buttons, and search by note, mood or name (try "jasmine" or "warm").
+| Where | What happens |
+| --- | --- |
+| Navigation | The menu is a row of perfume **blotter strips** hanging from the top of the screen. They sway when you scroll or brush past them, a stain of colour wicks up the paper when you hover, and the current page stays stained. They tuck away while you read. On phones you **pull the strip down** to open the menu, which unrolls like paper. |
+| Logo | MUSE **breathes**: each letter slowly swells and softens, then thins again. |
+| Preloader | The word *Inhale* swells from a hairline to heavy and soft, then flips to *Exhale* and evaporates. Shown once per visit. |
+| Hero | A real photograph of smoke rendered in WebGL. Wherever the cursor moves, the image **rises like vapor**. The giant MUSE inverts the smoke inside its letters, and the letters swell toward your cursor. |
+| Headings | Every big title **condenses out of vapor**: heavy, soft, blurred letters settle into thin sharp glass. |
+| Product photos | Hover a bottle and the cursor **uncovers what the scent is made of** (resin under the amber, jasmine under the floral). |
+| Hold to smell | Press and hold a button, or the space bar. A blurred photograph sharpens, smoke rises, and the fragrance plays out in three acts. There is also a "let it play" option for anyone who cannot hold. |
+| Anatomy of a scent | Scrolling down walks you sideways through five raw materials, with their botanical names. |
+| Translate a memory | Choose a memory ("Candles in an old church") and a loudness, and get a fragrance, its formula and how to wear it. |
+| Page changes | Pages swap behind a burst of dark mist that sprays from where you clicked, then evaporates. |
+| Bag | Adding a product flies a drop of its colour into the Bag strip, which fills with colour as the bag grows. |
+
+## Pages
+
+Home, Shop (filters and sorting), seven product pages (`#ambre`, `#fleur`, `#cedre`, `#fumee`, `#prisme`, `#soleil`, `#set`), House, Journal (with a reader for each story), Contact (form and FAQ) and Checkout (details, delivery, payment, confirmation). Search covers products, notes and stories.
+
+## Before going live
+
+- **Checkout is a demo.** It validates the form and shows a confirmation, but takes no payment. Connect Stripe, Shopify Buy Button, Snipcart or similar in the checkout section of `muse.js`. The page says so on screen.
+- **Contact and newsletter forms** need an endpoint. Search `muse.js` for *Connect your form endpoint* and *Connect your mailing list provider*.
+- **Products, prices and copy** live in the `PRODUCTS` list near the top of `muse.js`. Sizes are worked out from the 50 ml price.
+- **Contact details** on the Contact page are placeholders (`concierge@muse.example`).
+- **Your own photography** can replace any file in `assets/img/`. Keep the same names, or update the `img` and `reveal` fields in `PRODUCTS`.
 
 ## Accessibility and performance
-- Uses native `<dialog>` for the menu, search, bag and quick view, so focus is trapped and Escape closes them.
-- Hero tabs follow the ARIA tab pattern with arrow keys. The quiz uses real radio buttons and the slider is a native range input.
-- `prefers-reduced-motion` turns off the preloader, physics, waves, parallax and the cursor trail.
-- One shared animation loop sleeps when nothing is moving. Waves and the atelier pause when they're off screen.
-- The bag is saved in `localStorage`.
 
-## Making it yours
-- **Prices, notes and copy** live in the `SCENTS` object at the top of `assets/js/muse.js`. Prices also appear in the product cards in `index.html`, so update both.
-- **Colours and fonts** are tokens in the `:root` block at the top of `muse.css`. Each fragrance's liquid and cap colours are under `[data-scent="…"]`.
-- **Newsletter:** connect your mailing provider where `letters()` says *Connect your mailing list provider here*.
-- **Checkout:** the Checkout button currently shows a notice. Point the `[data-checkout]` handler in `clicks()` at your store.
-- **Photography:** bottles and ingredients are drawn as SVG so they can animate. To use product photos instead, place an `<img>` inside any `.scene` in place of the `data-flacon` span.
+- Native `<dialog>` for search, bag, menu and stories, so focus is trapped and Escape closes them.
+- Every hold or drag interaction has a keyboard or click alternative.
+- `prefers-reduced-motion` turns off the preloader, WebGL, melting type, sway and parallax.
+- One shared animation loop sleeps when nothing moves. WebGL and the smoke canvas pause when they are off screen.
+- The bag is kept in `localStorage`.
+
+## Photo credits
+
+All photographs are from [Unsplash](https://unsplash.com) under the Unsplash License, which allows free commercial use. Credit is appreciated but not required. None show another brand's name or logo.
+
+| File | Photographer |
+| --- | --- |
+| smoke-violet | Robert Zunikoff |
+| smoke-silk, smoke-teal | Pawel Czerwinski |
+| pipette-gold, pipette-mono, hands-pour, liquid-gold | Fulvio Ciccolo |
+| bottle-frost | Angélica Echeverry |
+| bottle-ink | Kier in Sight Archives |
+| bottle-prism | JC Media |
+| jasmine-night | Irina Iriser |
+| jasmine-star | Chinmay Sethi |
+| jasmine-branch | Liana S |
+| cedar-bark | Wyxina Tresse |
+| bark-grey | Chris Lawton |
+| resin | Alexandr Popadin |
+| bottle-sun (photo-1622618991746), dropper-leaf (photo-1617897903246), lemons (photo-1528632735386), citrus-dried (photo-1569442130407) | Unsplash contributors |
