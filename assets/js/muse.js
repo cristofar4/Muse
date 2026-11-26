@@ -1,10 +1,10 @@
 /* =========================================================================
    MUSE · site script
-   Uses GSAP + ScrollTrigger for choreography and Lenis for smooth scroll
-   (all vendored in assets/vendor). The 3D hero lives in hero3d.js.
-   1. helpers & data      4. home choreography     7. bag, checkout, forms
+   GSAP + ScrollTrigger for choreography, Lenis for smooth scroll (all in
+   assets/vendor). The bottle and its vapour live in hero.js and smoke.js.
+   1. helpers & data      4. home                   7. bag, checkout, forms
    2. smooth scroll       5. shop, product, journal 8. router, loader, boot
-   3. island, cursor      6. dialogs, search
+   3. header              6. dialogs, search
    ========================================================================= */
 (() => {
   'use strict';
@@ -30,12 +30,16 @@
     get(k, f) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : f; } catch (e) { return f; } },
     set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { /* storage unavailable */ } }
   };
+  const hasGL = (() => { try { return !!d.createElement('canvas').getContext('webgl2'); } catch (e) { return false; } })();
 
   const ALT = {
-    'amber-satin': 'A round bottle of amber perfume with a gold cap on cream satin',
-    'hand-clear': 'A hand holding a clear glass perfume bottle against a pale background',
-    'crystal-flowers': 'A cut crystal perfume bottle surrounded by peach flowers',
-    'gold-glass': 'Close view of swirling golden glass catching the light',
+    'pack-ambre': 'Ambre 01, a rectangular glass flacon of amber perfume with a gold cap',
+    'pack-fleur': 'Fleur 02, a rectangular glass flacon of rose pink perfume with a gold cap',
+    'pack-cedre': 'Cèdre 03, a rectangular glass flacon of olive green perfume with a gold cap',
+    'pack-fumee': 'Fumée 04, a rectangular glass flacon of smoky brown perfume with a gold cap',
+    'pack-prisme': 'Prisme 05, a rectangular glass flacon of pale aqua perfume with a gold cap',
+    'pack-soleil': 'Soleil 06, a rectangular glass flacon of golden yellow perfume with a gold cap',
+    'pack-set': 'Six small MUSE vials in amber, rose, green, smoke, aqua and gold, standing in an arc',
     'smoke-violet': 'Violet smoke curling against a black background',
     'smoke-silk': 'Green smoke folding like silk on black',
     'smoke-teal': 'Pale teal smoke drifting across darkness',
@@ -43,11 +47,6 @@
     'pipette-mono': 'A perfumer\'s gloved hand holds a pipette above a glass bottle, in black and white',
     'hands-pour': 'Gloved hands pour amber oil into a square glass bottle',
     'liquid-gold': 'Golden liquid pouring into a metal bowl',
-    'bottle-frost': 'A frosted glass perfume bottle in soft light with dried pink flowers',
-    'bottle-ink': 'A black patterned perfume bottle on swirls of black and white paint',
-    'bottle-prism': 'A glass flask of blue perfume reflected in iridescent light',
-    'bottle-sun': 'Glass perfume bottles casting long shadows on a golden surface',
-    'dropper-leaf': 'A small dropper bottle of oil beside a eucalyptus branch on linen',
     'jasmine-night': 'Jasmine blossoms on a dark green shrub',
     'jasmine-star': 'Star jasmine flowers on a slender stem',
     'jasmine-branch': 'A trailing jasmine branch with small white flowers',
@@ -62,49 +61,49 @@
     `<img src="${SRC(n)}" srcset="${SRC(n)} 800w, ${SRC(n, 1600)} 1600w" sizes="${sizes}" alt="${esc(alt)}" loading="lazy" decoding="async"${extra}>`;
 
   const PRODUCTS = [
-    { key: 'ambre', no: '01', name: 'Ambre 01', family: 'Amber', mood: 'Warm and resinous', price: 165, img: 'amber-satin', reveal: 'resin',
+    { key: 'ambre', no: '01', name: 'Ambre 01', family: 'Amber', mood: 'Warm and resinous', price: 165, img: 'pack-ambre', reveal: 'resin',
       desc: 'Sun warmed resin and saffron over a glowing base of labdanum. Golden from the first spray, then softer, warmer and closer to skin as the evening goes on.',
       line: 'Late sun, bottled. Resin that glows on skin for hours.',
       wear: 'Two sprays at the base of the throat. Amber loves warm skin, so it blooms most in the evening.',
       notes: { Top: ['Bergamot', 'Pink pepper'], Heart: ['Saffron', 'Orange blossom'], Base: ['Labdanum', 'Vanilla', 'Sandalwood'] },
       acts: [['citrus-dried', 'Top', 'Bergamot', 'Bright peel, a flash of green.'], ['liquid-gold', 'Heart', 'Saffron', 'Honeyed, leathery, warm as skin.'], ['resin', 'Base', 'Labdanum', 'Resin that glows for hours.']],
       character: { Longevity: 88, Sillage: 72, Warmth: 94, Freshness: 18 } },
-    { key: 'fleur', no: '02', name: 'Fleur 02', family: 'Floral', mood: 'Soft and luminous', price: 155, img: 'crystal-flowers', reveal: 'jasmine-star',
+    { key: 'fleur', no: '02', name: 'Fleur 02', family: 'Floral', mood: 'Soft and luminous', price: 155, img: 'pack-fleur', reveal: 'jasmine-star',
       desc: 'Jasmine sambac picked before dawn, kept airy with mandarin and settled on a clean white musk. Close, quiet and luminous, like skin after a long bath.',
       line: 'Night flowers through an open window. Quiet, close, luminous.',
       wear: 'One spray on each wrist and one in the hair. Musk sits close, so let people come near.',
       notes: { Top: ['Mandarin', 'Pear'], Heart: ['Jasmine sambac', 'Rose'], Base: ['White musk', 'Cashmere wood'] },
-      acts: [['lemons', 'Top', 'Mandarin', 'Sweet zest, barely there.'], ['jasmine-star', 'Heart', 'Jasmine sambac', 'Night flowers opening.'], ['bottle-frost', 'Base', 'White musk', 'Clean skin, soft as linen.']],
+      acts: [['lemons', 'Top', 'Mandarin', 'Sweet zest, barely there.'], ['jasmine-star', 'Heart', 'Jasmine sambac', 'Night flowers opening.'], ['jasmine-branch', 'Base', 'White musk', 'Clean skin, soft as linen.']],
       character: { Longevity: 64, Sillage: 48, Warmth: 52, Freshness: 58 } },
-    { key: 'cedre', no: '03', name: 'Cèdre 03', family: 'Woody', mood: 'Green and grounding', price: 170, img: 'hand-clear', reveal: 'cedar-bark',
+    { key: 'cedre', no: '03', name: 'Cèdre 03', family: 'Woody', mood: 'Green and grounding', price: 170, img: 'pack-cedre', reveal: 'cedar-bark',
       desc: 'Cold lime and Atlas cedar over oakmoss and vetiver. Green, dry and calm, like walking into a forest the morning after a storm.',
       line: 'Rain on bark and pencil shavings. Green, dry, calm.',
       wear: 'Spray on the chest and the back of the neck. Woods last, so two sprays will carry you into the evening.',
       notes: { Top: ['Lime', 'Cardamom'], Heart: ['Atlas cedar', 'Vetiver'], Base: ['Oakmoss', 'Ambrette'] },
       acts: [['lemons', 'Top', 'Lime', 'Cold, sharp, awake.'], ['cedar-bark', 'Heart', 'Atlas cedar', 'Pencil shavings and rain.'], ['bark-grey', 'Base', 'Oakmoss', 'Forest floor after a storm.']],
       character: { Longevity: 82, Sillage: 66, Warmth: 40, Freshness: 70 } },
-    { key: 'fumee', no: '04', name: 'Fumée 04', family: 'Smoky', mood: 'Dark and hypnotic', price: 180, img: 'bottle-ink', reveal: 'smoke-violet',
+    { key: 'fumee', no: '04', name: 'Fumée 04', family: 'Smoky', mood: 'Dark and hypnotic', price: 180, img: 'pack-fumee', reveal: 'smoke-violet',
       desc: 'Black pepper and frankincense curling over smoked guaiac wood. Dark, slow and strangely comforting, like candles left burning in a cold stone room.',
       line: 'Candles in a cold stone room. Dark, slow, hypnotic.',
       wear: 'One spray is a statement. Wear it on clothes and scarves, where smoke clings longest.',
       notes: { Top: ['Black pepper', 'Elemi'], Heart: ['Frankincense', 'Cypriol'], Base: ['Guaiac wood', 'Birch tar'] },
       acts: [['smoke-teal', 'Top', 'Black pepper', 'A spark in the dark.'], ['smoke-violet', 'Heart', 'Frankincense', 'Old stone, cold air, candles.'], ['bark-grey', 'Base', 'Guaiac wood', 'Smoked wood, slow and deep.']],
       character: { Longevity: 92, Sillage: 84, Warmth: 76, Freshness: 22 } },
-    { key: 'prisme', no: '05', name: 'Prisme 05', family: 'Fresh', mood: 'Bright and strange', price: 160, img: 'bottle-prism', reveal: 'smoke-teal',
+    { key: 'prisme', no: '05', name: 'Prisme 05', family: 'Fresh', mood: 'Bright and strange', price: 160, img: 'pack-prisme', reveal: 'smoke-teal',
       desc: 'Sparkling aldehydes, powdery iris and a humming ambrette musk. It smells like light through a prism: clean, metallic and impossible to place.',
       line: 'Light through a prism. Clean, metallic, impossible to place.',
       wear: 'Mist it into the air and walk through. Aldehydes are bright and fleeting, so refresh at noon.',
       notes: { Top: ['Aldehydes', 'Grapefruit'], Heart: ['Orris', 'Violet leaf'], Base: ['Ambrette', 'Cashmeran'] },
-      acts: [['smoke-teal', 'Top', 'Aldehydes', 'Fizz, like light on metal.'], ['bottle-prism', 'Heart', 'Orris', 'Powder, violet, cool.'], ['smoke-silk', 'Base', 'Ambrette', 'A musk that hums.']],
+      acts: [['smoke-teal', 'Top', 'Aldehydes', 'Fizz, like light on metal.'], ['smoke-violet', 'Heart', 'Orris', 'Powder, violet, cool.'], ['smoke-silk', 'Base', 'Ambrette', 'A musk that hums.']],
       character: { Longevity: 60, Sillage: 70, Warmth: 30, Freshness: 88 } },
-    { key: 'soleil', no: '06', name: 'Soleil 06', family: 'Fresh', mood: 'Golden and sunlit', price: 145, img: 'bottle-sun', reveal: 'lemons',
+    { key: 'soleil', no: '06', name: 'Soleil 06', family: 'Fresh', mood: 'Golden and sunlit', price: 145, img: 'pack-soleil', reveal: 'lemons',
       desc: 'Bergamot and neroli warmed by dry vetiver. A golden citrus that skips the cologne cliché and smells like late afternoon on a terrace.',
       line: 'Late afternoon on a terrace. Golden citrus, dry grass.',
       wear: 'Spray generously on skin and clothes. Citrus is light by nature, so be bold with it.',
       notes: { Top: ['Bergamot', 'Petitgrain'], Heart: ['Neroli', 'Orange blossom'], Base: ['Vetiver', 'Musk'] },
       acts: [['lemons', 'Top', 'Bergamot', 'Sun on peel.'], ['jasmine-night', 'Heart', 'Neroli', 'Orange blossom at noon.'], ['bark-grey', 'Base', 'Vetiver', 'Dry grass, warm earth.']],
       character: { Longevity: 52, Sillage: 58, Warmth: 46, Freshness: 94 } },
-    { key: 'set', no: '00', name: 'Discovery set', family: 'Set', mood: 'All six, in 2 ml vials', price: 38, img: 'dropper-leaf', reveal: 'citrus-dried', set: true,
+    { key: 'set', no: '00', name: 'Discovery set', family: 'Set', mood: 'All six, in 2 ml vials', price: 38, img: 'pack-set', reveal: 'citrus-dried', set: true,
       desc: 'All six signatures in 2 ml vials, packed in a paper case. Wear one a day for a week and let your skin decide which one is yours.',
       line: 'Six small bottles, one week, no pressure.',
       wear: 'Wear one vial a day, on skin rather than paper, and note which one you still notice at dinner.',
@@ -122,11 +121,7 @@
   const defaultMl = key => (P[key].set ? 12 : 50);
   PRODUCTS.forEach(p => { p.search = norm([p.name, p.family, p.mood, p.desc, Object.values(p.notes).flat().join(' ')].join(' ')); });
 
-  const HERO_SCENTS = [
-    { name: 'Ambre 01', word: 'AMBRE', deep: '#3f1402', bright: '#f7ad45', bg: '#2a070d', glow: '#6b1f22', photos: ['citrus-dried', 'resin', 'liquid-gold'].map(n => SRC(n)) },
-    { name: 'Fleur 02', word: 'FLEUR', deep: '#5a0f26', bright: '#f6a9b6', bg: '#36091d', glow: '#7a2a44', photos: ['jasmine-star', 'jasmine-night', 'jasmine-branch'].map(n => SRC(n)) },
-    { name: 'Cèdre 03', word: 'CÈDRE', deep: '#1f2504', bright: '#cfd062', bg: '#141008', glow: '#3d3a1c', photos: ['cedar-bark', 'lemons', 'bark-grey'].map(n => SRC(n)) }
-  ];
+  const HERO_SCENT = { name: 'Ambre 01', deep: '#5a2204', bright: '#f0a443' };
 
   const ARTICLES = [
     { key: 'choose', cat: 'Guide', mins: 6, img: 'jasmine-branch', title: 'How to choose a fragrance you will still love next year', body: [
@@ -139,7 +134,7 @@
       'Top notes are the smallest, lightest molecules: citrus peel, herbs, a sparkle of pepper. They introduce the fragrance and fade within fifteen minutes.',
       'Heart notes arrive as the top lifts away. Flowers, spices and soft fruits live here, and they shape the character you will recognise for the next few hours.',
       'Base notes are heavy and slow: woods, resins, musks, vanilla. They anchor everything above them, and they are what you still smell on a scarf the next morning.'] },
-    { key: 'wear', cat: 'Ritual', mins: 3, img: 'hand-clear', title: 'Where to wear it: pulse points and the hair trick', body: [
+    { key: 'wear', cat: 'Ritual', mins: 3, img: 'liquid-gold', title: 'Where to wear it: pulse points and the hair trick', body: [
       'Warmth helps a fragrance rise. That is why pulse points matter: the inside of the wrists, the base of the throat, behind the ears, the inside of the elbows.',
       'Do not rub your wrists together. It crushes the top notes before they can open and makes the scent flatten faster.',
       'For a trail that lasts all day, mist once into the air and walk through it, or spray a hairbrush and brush it through dry hair. Hair holds scent beautifully, and it moves when you do.'] },
@@ -170,7 +165,7 @@
      --------------------------------------------------------------------- */
   function smoothScroll() {
     if (reduced() || !window.Lenis) return;
-    lenis = new window.Lenis({ lerp: .085, smoothWheel: true, wheelMultiplier: 1 });
+    lenis = new window.Lenis({ lerp: .09, smoothWheel: true, wheelMultiplier: 1 });
     lenis.on('scroll', () => ST && ST.update());
     gsap.ticker.add(t => lenis.raf(t * 1000));
     gsap.ticker.lagSmoothing(0);
@@ -186,148 +181,121 @@
   }
 
   /* ---------------------------------------------------------------------
-     3. THE ISLAND · glass navigation that morphs into its own menus
+     3. HEADER · announcement ticker, mega menu, phone menu, scroll states
      --------------------------------------------------------------------- */
-  const islandApi = { close() {}, tone() {}, current() {} };
-  function island() {
-    const isl = $('#island'), shell = $('[data-shell]'), bar = $('[data-bar]'), panels = $('[data-panels]');
-    const blob = $('[data-blob]'), links = $('[data-links]'), progress = $('[data-progress]');
-    const menuBtn = $('[data-mobile-menu]');
-    let open = null, closeTimer = 0, hoverTimer = 0, blobTarget = null;
+  const headerApi = { close() {}, current() {}, tone() {} };
+  function header() {
+    const hdr = $('#hdr'), mega = $('[data-mega]'), megaBtn = $('[data-mega-btn]'), scrim = $('[data-scrim]');
+    const menu = $('[data-menu]'), menuBtn = $('[data-menu-btn]');
+    let megaOpen = false, menuOpen = false, hoverT = 0, lastY = scrollY;
 
-    const ipanelProducts = SIGNATURES.map(p => `<li><a href="#${p.key}">${img(p.img, '128px', '')}<b>${esc(p.name)}</b><span>${money(p.price)}</span></a></li>`).join('');
-    $('[data-ipanel-products]').innerHTML = ipanelProducts;
-    $('[data-mnav-products]').innerHTML = SIGNATURES.map(p => `<li><a href="#${p.key}">${img(p.img, '112px', '')}${esc(p.name)}</a></li>`).join('');
+    // ticker
+    const ticks = $$('[data-ticker] span');
+    let ti = 0;
+    if (ticks.length > 1 && !reduced()) setInterval(() => { ticks[ti].classList.remove('is-on'); ti = (ti + 1) % ticks.length; ticks[ti].classList.add('is-on'); }, 4200);
 
-    const setSize = (w, h) => { shell.style.setProperty('--w', `${Math.round(w)}px`); shell.style.setProperty('--h', `${Math.round(h)}px`); };
-    const closedSize = () => setSize(bar.offsetWidth + 2, bar.offsetHeight + 2);
-    closedSize();
-    addEventListener('resize', () => { if (open) openPanel(open, true); else closedSize(); });
-    if (d.fonts && d.fonts.ready) d.fonts.ready.then(() => { if (!open) closedSize(); });
+    // mega menu content
+    $('[data-mega-list]').innerHTML = SIGNATURES.map((p, i) => `<li style="--k:${i}"><a href="#${p.key}" data-mega-item="${p.key}"><span class="mega__no">${p.no}</span><span class="mega__name">${esc(p.name)}</span><span class="mega__fam">${esc(p.family)}</span><span class="mega__price">${money(p.price)}</span></a></li>`).join('');
+    $('[data-menu-products]').innerHTML = SIGNATURES.map(p => `<li><a href="#${p.key}"><img src="${SRC(p.img)}" alt="" loading="lazy">${esc(p.name)}</a></li>`).join('');
+    $$('.menu__nav a').forEach((a, i) => a.style.setProperty('--k', i));
 
-    function openPanel(name, instant) {
-      clearTimeout(closeTimer);
-      const el = $(`[data-ipanel="${name}"]`);
-      if (!el) return;
-      if (open && open !== name) { const prev = $(`[data-ipanel="${open}"]`); prev.classList.remove('is-in'); prev.hidden = true; }
-      el.hidden = false;
-      open = name;
-      isl.classList.add('is-open');
-      $$('[data-panel]').forEach(b => b.setAttribute('aria-expanded', String(b.dataset.panel === name)));
-      if (name === 'mobile') menuBtn.setAttribute('aria-expanded', 'true');
-      const w = name === 'mobile' ? innerWidth - 24 : Math.max(bar.offsetWidth, el.offsetWidth + 26) + 2;
-      const h = name === 'mobile' ? innerHeight - 28 : bar.offsetHeight + panels.offsetHeight + 2;
-      setSize(w, h);
-      requestAnimationFrame(() => el.classList.add('is-in'));
-      if (lenis && name === 'mobile') lenis.stop();
-      if (instant) el.classList.add('is-in');
+    const fimg = $('[data-mega-img]'), feat = $('[data-mega-feature]');
+    let featKey = 'ambre', swapT = 0;
+    function feature(key) {
+      if (key === featKey) return;
+      featKey = key;
+      const p = P[key];
+      feat.href = `#${key}`;
+      $('[data-mega-name]').textContent = p.name;
+      $('[data-mega-mood]').textContent = p.mood;
+      fimg.classList.add('is-swap');
+      clearTimeout(swapT);
+      swapT = setTimeout(() => { fimg.src = SRC(p.img); fimg.onload = () => fimg.classList.remove('is-swap'); if (fimg.complete) fimg.classList.remove('is-swap'); }, 180);
     }
-    function closePanel() {
-      if (!open) return;
-      const el = $(`[data-ipanel="${open}"]`);
-      el.classList.remove('is-in');
-      const was = open;
-      open = null;
-      isl.classList.remove('is-open');
-      $$('[data-panel]').forEach(b => b.setAttribute('aria-expanded', 'false'));
-      menuBtn.setAttribute('aria-expanded', 'false');
-      closedSize();
-      if (lenis && was === 'mobile') lenis.start();
-      closeTimer = setTimeout(() => { if (open !== was) el.hidden = true; }, 600);
-      aimBlob(currentLink());
-    }
-    islandApi.close = closePanel;
+    mega.addEventListener('pointerover', e => { const a = e.target.closest('[data-mega-item]'); if (a) feature(a.dataset.megaItem); });
+    mega.addEventListener('focusin', e => { const a = e.target.closest('[data-mega-item]'); if (a) feature(a.dataset.megaItem); });
 
-    $$('[data-panel]').forEach(b => {
-      b.addEventListener('click', () => (open === b.dataset.panel ? closePanel() : openPanel(b.dataset.panel)));
-      if (fine) b.addEventListener('pointerenter', () => { clearTimeout(hoverTimer); hoverTimer = setTimeout(() => openPanel(b.dataset.panel), 140); });
-    });
-    $$('.island__link:not([data-panel])').forEach(a => a.addEventListener('pointerenter', () => { clearTimeout(hoverTimer); if (open && open !== 'mobile') hoverTimer = setTimeout(closePanel, 160); }));
+    function openMega() {
+      clearTimeout(hoverT);
+      if (megaOpen || mobile()) return;
+      megaOpen = true;
+      mega.classList.add('is-open'); mega.setAttribute('aria-hidden', 'false');
+      megaBtn.setAttribute('aria-expanded', 'true');
+      scrim.classList.add('is-on');
+      paint();
+    }
+    function closeMega() {
+      clearTimeout(hoverT);
+      if (!megaOpen) return;
+      megaOpen = false;
+      mega.classList.remove('is-open'); mega.setAttribute('aria-hidden', 'true');
+      megaBtn.setAttribute('aria-expanded', 'false');
+      scrim.classList.remove('is-on');
+      paint();
+    }
+    function openMenu() {
+      menuOpen = true;
+      menu.classList.add('is-open'); menu.setAttribute('aria-hidden', 'false');
+      menuBtn.setAttribute('aria-expanded', 'true'); menuBtn.setAttribute('aria-label', 'Close menu');
+      root.classList.add('has-menu');
+      if (lenis) lenis.stop();
+      paint();
+    }
+    function closeMenu() {
+      if (!menuOpen) return;
+      menuOpen = false;
+      menu.classList.remove('is-open'); menu.setAttribute('aria-hidden', 'true');
+      menuBtn.setAttribute('aria-expanded', 'false'); menuBtn.setAttribute('aria-label', 'Open menu');
+      root.classList.remove('has-menu');
+      if (lenis && !$$('dialog[open]').length) lenis.start();
+      paint();
+    }
+    headerApi.close = () => { closeMega(); closeMenu(); };
+
+    megaBtn.addEventListener('click', () => (megaOpen ? closeMega() : openMega()));
     if (fine) {
-      shell.addEventListener('pointerleave', () => { clearTimeout(hoverTimer); if (open && open !== 'mobile') hoverTimer = setTimeout(closePanel, 280); });
-      shell.addEventListener('pointerenter', () => clearTimeout(hoverTimer));
+      megaBtn.addEventListener('pointerenter', () => { clearTimeout(hoverT); hoverT = setTimeout(openMega, 120); });
+      $$('.hdr__link:not([data-mega-btn]), .hdr__logo, .hdr__icon, .hdr__bag').forEach(el => el.addEventListener('pointerenter', () => { clearTimeout(hoverT); if (megaOpen) hoverT = setTimeout(closeMega, 140); }));
+      hdr.addEventListener('pointerleave', () => { clearTimeout(hoverT); if (megaOpen) hoverT = setTimeout(closeMega, 260); });
+      hdr.addEventListener('pointerenter', () => { if (megaOpen) clearTimeout(hoverT); });
     }
-    menuBtn.addEventListener('click', () => (open === 'mobile' ? closePanel() : openPanel('mobile')));
-    panels.addEventListener('click', e => { if (e.target.closest('a')) closePanel(); });
-    d.addEventListener('keydown', e => { if (e.key === 'Escape' && open) { closePanel(); } });
-    d.addEventListener('pointerdown', e => { if (open && !shell.contains(e.target)) closePanel(); });
+    scrim.addEventListener('click', closeMega);
+    mega.addEventListener('click', e => { if (e.target.closest('a')) closeMega(); });
+    menuBtn.addEventListener('click', () => (menuOpen ? closeMenu() : openMenu()));
+    menu.addEventListener('click', e => { if (e.target.closest('a')) closeMenu(); });
+    d.addEventListener('keydown', e => { if (e.key === 'Escape') { if (megaOpen) { closeMega(); megaBtn.focus(); } if (menuOpen) { closeMenu(); menuBtn.focus(); } } });
+    addEventListener('resize', () => { if (!mobile()) closeMenu(); else closeMega(); });
 
-    /* the liquid highlight that slides between links */
-    function aimBlob(el) {
-      blobTarget = el;
-      if (!el || mobile()) { blob.classList.remove('is-on'); return; }
-      const lr = links.getBoundingClientRect(), r = el.getBoundingClientRect();
-      const x = r.left - lr.left, w = r.width;
-      blob.classList.add('is-on');
-      if (gsap && !reduced()) gsap.to(blob, { x, width: w, duration: .75, ease: 'elastic.out(1, .72)', overwrite: true });
-      else { blob.style.transform = `translateX(${x}px)`; blob.style.width = `${w}px`; }
-    }
-    const currentLink = () => $('.island__link.is-current');
-    $$('.island__link').forEach(l => {
-      l.addEventListener('pointerenter', () => aimBlob(l));
-      l.addEventListener('focus', () => aimBlob(l));
-    });
-    links.addEventListener('pointerleave', () => aimBlob(currentLink()));
-    islandApi.current = route => {
-      const name = route.view === 'product' || route.view === 'shop' ? 'collection' : route.view;
-      $$('.island__link').forEach(l => l.classList.toggle('is-current', (l.dataset.route || l.dataset.panel) === name));
-      if (!blobTarget || blobTarget.classList.contains('is-current') || !open) aimBlob(currentLink());
+    headerApi.current = route => {
+      const name = route.view === 'product' ? (route.key === 'set' ? 'set' : 'shop') : route.view;
+      $$('.hdr__link').forEach(l => l.classList.toggle('is-current', (l.dataset.route || (l.hasAttribute('data-mega-btn') ? 'shop' : '')) === name));
     };
 
-    /* tone follows the section under the island, plus a scroll progress line */
-    islandApi.tone = () => {
-      const probe = 44;
-      let t = 'dark';
-      for (const el of $$('.view:not([hidden]) [data-tone], .foot')) {
+    // states: transparent over dark sections, solid ivory over light ones, hides while you read
+    function paint() {
+      const y = scrollY;
+      const probe = hdr.offsetHeight * .6;
+      let tone = 'dark';
+      for (const el of $$('.view:not([hidden]) [data-tone], .perks, .foot')) {
         const r = el.getBoundingClientRect();
-        if (r.top <= probe && r.bottom > probe) { t = el.dataset.tone; break; }
+        if (r.top <= probe && r.bottom > probe) { tone = el.dataset.tone || 'light'; break; }
       }
-      if (isl.dataset.tone !== t) isl.dataset.tone = t;
-      const max = root.scrollHeight - innerHeight;
-      progress.style.setProperty('--p', (max > 0 ? scrollY / max : 0).toFixed(4));
-    };
-    addEventListener('scroll', islandApi.tone, { passive: true });
-  }
-
-  /* contextual cursor */
-  function cursor() {
-    if (!fine || reduced() || !gsap) return;
-    root.classList.add('has-cursor');
-    const c = $('.cursor'), dot = $('.cursor__dot'), ring = $('.cursor__ring'), label = $('[data-cursor-label]');
-    gsap.set([dot, ring], { x: -100, y: -100 });
-    const dx = gsap.quickTo(dot, 'x', { duration: .12, ease: 'power3' }), dy = gsap.quickTo(dot, 'y', { duration: .12, ease: 'power3' });
-    const rx = gsap.quickTo(ring, 'x', { duration: .5, ease: 'power3' }), ry = gsap.quickTo(ring, 'y', { duration: .5, ease: 'power3' });
-    let px = -100, py = -100, tick = false;
-    const sense = t => {
-      const lab = t && t.closest ? t.closest('[data-cursor]') : null;
-      c.classList.toggle('is-label', !!lab);
-      if (lab && label.textContent !== lab.dataset.cursor) label.textContent = lab.dataset.cursor;
-      c.classList.toggle('is-link', !lab && !!(t && t.closest && t.closest('a, button, label, input, select, textarea')));
-    };
-    addEventListener('pointermove', e => {
-      px = e.clientX; py = e.clientY;
-      dx(px); dy(py); rx(px); ry(py);
-      sense(e.target);
-    }, { passive: true });
+      hdr.dataset.tone = tone;
+      hdr.classList.toggle('is-scrolled', y > 30);
+      hdr.classList.toggle('is-solid', tone === 'light');
+      hdr.classList.toggle('is-open', megaOpen || menuOpen);
+    }
+    headerApi.tone = paint;
     addEventListener('scroll', () => {
-      if (tick) return;
-      tick = true;
-      requestAnimationFrame(() => { tick = false; sense(d.elementFromPoint(px, py)); });
+      const y = scrollY, dy = y - lastY;
+      if (Math.abs(dy) > 4) {
+        hdr.classList.toggle('is-hidden', dy > 0 && y > 260 && !megaOpen && !menuOpen && !$$('dialog[open]').length);
+        if (dy > 0 && megaOpen) closeMega();
+        lastY = y;
+      }
+      paint();
     }, { passive: true });
-    d.addEventListener('pointerleave', () => { dx(-100); dy(-100); rx(-100); ry(-100); });
-  }
-
-  /* magnetic buttons */
-  function magnetic() {
-    if (!fine || reduced() || !gsap) return;
-    d.addEventListener('pointermove', e => {
-      const b = e.target.closest && e.target.closest('[data-magnetic]');
-      $$('[data-magnetic].is-mag').forEach(x => { if (x !== b) { x.classList.remove('is-mag'); gsap.to(x, { x: 0, y: 0, duration: .8, ease: 'elastic.out(1, .5)' }); } });
-      if (!b) return;
-      b.classList.add('is-mag');
-      const r = b.getBoundingClientRect();
-      gsap.to(b, { x: (e.clientX - r.left - r.width / 2) * .25, y: (e.clientY - r.top - r.height / 2) * .35, duration: .5, ease: 'power3' });
-    }, { passive: true });
+    paint();
   }
 
   /* word splitting for reveals */
@@ -354,145 +322,127 @@
   }
 
   /* ---------------------------------------------------------------------
-     4. HOME CHOREOGRAPHY
+     4. HOME
      --------------------------------------------------------------------- */
-  let heroApi = null;
+  let heroApi = null, heroEls = null;
   const heroState = { progress: 0 };
+
   function heroUI(p) {
-    const sc = smooth(.12, .36, p) + smooth(.46, .7, p);
-    const idx = Math.round(sc);
-    $$('[data-hero-scent]').forEach(el => el.classList.toggle('is-on', +el.dataset.heroScent === idx));
-    const seg = [[0, .36], [.36, .7], [.7, .92]];
-    $$('[data-hero-step]').forEach((el, i) => {
-      el.classList.toggle('is-on', i === idx);
-      el.style.setProperty('--sp', clamp((p - seg[i][0]) / (seg[i][1] - seg[i][0]), 0, 1).toFixed(3));
-    });
-    const ui = $('.hero__ui'), veil = $('.hero__veil');
-    if (ui) ui.style.opacity = String(1 - smooth(.8, .9, p));
-    if (veil) veil.style.opacity = String(smooth(.9, 1, p));
+    const H = heroEls;
+    if (!H) return;
+    const show = (el, a, b, c, e) => {
+      const i = smooth(a, b, p), o = 1 - smooth(c, e, p), v = i * o;
+      el.style.opacity = v.toFixed(3);
+      el.style.visibility = v > .002 ? 'visible' : 'hidden';
+      el.style.transform = `translateY(${((1 - i) * 36 - (1 - o) * 36).toFixed(1)}px)`;
+    };
+    show(H.intro, -1, 0, .035, .1);
+    show(H.chaps[0], .12, .16, .3, .34);
+    show(H.chaps[1], .36, .4, .52, .56);
+    show(H.chaps[2], .58, .62, .74, .78);
+    show(H.buy, .8, .85, 2, 3);
+    const n = p < .12 ? '00' : p < .36 ? '01' : p < .58 ? '02' : '03';
+    if (H.count.textContent !== n) H.count.textContent = n;
+    H.bar.style.setProperty('--p', smooth(.06, .82, p).toFixed(3));
+    H.scroll.style.opacity = (1 - smooth(.005, .04, p)).toFixed(3);
+    H.fade.style.opacity = smooth(.93, 1, p).toFixed(3);
   }
 
-  function initHero3D() {
-    const sec = $('.hero'), canvas = $('[data-hero-canvas]'), stage = $('[data-hero-stage]');
-    if (!sec || heroApi || reduced() || !window.MuseHero) return null;
+  function initHero() {
+    const sec = $('.hero'), glCanvas = $('[data-hero-gl]'), smokeCanvas = $('[data-hero-smoke]'), stage = $('[data-hero-stage]');
+    if (!sec || heroApi || reduced() || !hasGL || !window.MuseHero) return null;
     try {
-      heroApi = window.MuseHero.createHero({ canvas, scents: HERO_SCENTS, onProgress: p => loaderState.set3d(p) });
+      heroApi = window.MuseHero.createHero({ glCanvas, smokeCanvas, scent: HERO_SCENT, small: mobile(), onProgress: p => loaderState.set3d(p) });
     } catch (e) { heroApi = null; return null; }
     sec.classList.add('is-gl');
     heroApi.setProgress(heroState.progress);
-    if (fine) sec.addEventListener('pointermove', e => heroApi.setPointer(e.clientX / innerWidth - .5, e.clientY / innerHeight - .5), { passive: true });
-    let downX = 0, downY = 0, down = false;
-    stage.addEventListener('pointerdown', e => { down = true; downX = e.clientX; downY = e.clientY; heroApi.dragStart(e.clientX); });
-    addEventListener('pointermove', e => { if (down) heroApi.dragMove(e.clientX); }, { passive: true });
-    addEventListener('pointerup', e => {
-      if (!down) return;
-      down = false; heroApi.dragEnd();
-      if (Math.hypot(e.clientX - downX, e.clientY - downY) < 6) heroApi.spray();
-    });
+    let lx = 0, ly = 0, has = false;
+    sec.addEventListener('pointermove', e => {
+      const r = stage.getBoundingClientRect();
+      const x = (e.clientX - r.left) / r.width, y = 1 - (e.clientY - r.top) / r.height;
+      heroApi.setPointer(x - .5, .5 - y);
+      if (has) heroApi.stir(x, y, x - lx, y - ly);
+      lx = x; ly = y; has = true;
+    }, { passive: true });
+    sec.addEventListener('pointerleave', () => { has = false; });
+    stage.addEventListener('click', () => heroApi.spray());
     if ('IntersectionObserver' in window) new IntersectionObserver(([e]) => heroApi.setVisible(e.isIntersecting && !$('[data-view="home"]').hidden)).observe(sec);
     heroApi.ready.then(() => loaderState.set3d(1));
     if (root.classList.contains('is-ready')) heroApi.start();
     return heroApi;
   }
 
-  function renderCollection() {
-    const track = $('[data-col-track]');
+  /* collection carousel */
+  function carousel() {
+    const track = $('[data-car-track]'), bar = $('[data-car-bar]');
     if (!track) return;
-    track.innerHTML = SIGNATURES.map(p => `
-      <article class="ccard">
-        <a class="ccard__img" href="#${p.key}" data-cursor="Discover" aria-label="${esc(p.name)}, ${esc(p.mood)}">${img(p.img, '(max-width: 900px) 74vw, 26vw')}<img src="${SRC(p.reveal)}" alt="" aria-hidden="true" loading="lazy"><span class="ccard__no label">No. ${p.no}</span></a>
-        <button class="ccard__add" type="button" data-add="${p.key}" aria-label="Add ${esc(p.name)} to bag"><svg aria-hidden="true"><use href="#i-plus"/></svg></button>
-        <div class="ccard__meta"><h3 class="ccard__name">${esc(p.name)}</h3><span class="ccard__price">${money(p.price)}</span></div>
-        <p class="ccard__mood">${esc(p.mood)}</p>
-      </article>`).join('') + `
-      <a class="ccard ccard--end" href="#shop" data-cursor="Open"><span class="label">And the discovery set</span><p>See every scent</p><span class="btn btn--line"><span>The collection</span><svg aria-hidden="true"><use href="#i-arrow"/></svg></span></a>`;
+    track.innerHTML = SIGNATURES.concat(P.set).map(pcardHTML).join('');
+    const prev = $('[data-car="-1"]'), next = $('[data-car="1"]');
+    const update = () => {
+      const max = track.scrollWidth - track.clientWidth;
+      const w = clamp(track.clientWidth / track.scrollWidth, .1, 1) * 100;
+      const p = max > 0 ? track.scrollLeft / max : 0;
+      bar.style.setProperty('--w', `${w.toFixed(2)}%`);
+      bar.style.setProperty('--x', `${(p * (100 - w) / w * 100).toFixed(2)}%`);
+      if (prev) prev.disabled = track.scrollLeft < 4;
+      if (next) next.disabled = track.scrollLeft > max - 4;
+    };
+    $$('[data-car]').forEach(b => b.addEventListener('click', () => {
+      const card = $('.pcard', track);
+      const step = card ? card.getBoundingClientRect().width + parseFloat(getComputedStyle(track).columnGap || 24) : 300;
+      track.scrollBy({ left: +b.dataset.car * step * (mobile() ? 1 : 2), behavior: reduced() ? 'auto' : 'smooth' });
+    }));
+    track.addEventListener('scroll', update, { passive: true });
+    addEventListener('resize', update);
+    update();
+  }
+
+  /* spotlight: buy Ambre straight from the home page */
+  const spotState = { ml: 50 };
+  function spotlight() {
+    const box = $('[data-spot-sizes]');
+    if (!box) return;
+    const paint = () => {
+      box.innerHTML = sizesFor(P.ambre).map(s => `<label class="size${s.ml === spotState.ml ? ' is-checked' : ''}"><input type="radio" name="spot-size" value="${s.ml}"${s.ml === spotState.ml ? ' checked' : ''}><b>${esc(s.label)}</b><span>${money(s.price)}</span></label>`).join('');
+      $('[data-spot-add-t]').textContent = `Add to bag · ${money(priceOf('ambre', spotState.ml))}`;
+    };
+    box.addEventListener('change', e => { if (e.target.name === 'spot-size') { spotState.ml = +e.target.value; paint(); } });
+    $('[data-spot-add]').addEventListener('click', () => bagAdd('ambre', spotState.ml, 1, $('.spot__tile')));
+    paint();
   }
 
   function buildHome() {
     const ctx = gsap.context(() => {
-      // hero pin + scroll story
       const sec = $('.hero');
-      ST.create({
-        trigger: sec, start: 'top top', end: () => `+=${innerHeight * (mobile() ? 2.4 : 3.4)}`,
-        pin: '.hero__pin', scrub: true, anticipatePin: 1,
-        onUpdate: self => { heroState.progress = self.progress; if (heroApi) heroApi.setProgress(self.progress); heroUI(self.progress); }
-      });
-
-      // manifesto: words light up in reading order
-      const text = $('[data-words]');
-      if (text) {
-        if (!text.dataset.split) {
-          const walk = node => Array.from(node.childNodes).forEach(n => {
-            if (n.nodeType === 3) {
-              const frag = d.createDocumentFragment();
-              n.textContent.split(/(\s+)/).forEach(p => {
-                if (!p) return;
-                if (/^\s+$/.test(p)) frag.appendChild(d.createTextNode(' '));
-                else { const s = d.createElement('span'); s.className = 'mw'; s.textContent = p; frag.appendChild(s); }
-              });
-              n.replaceWith(frag);
-            }
-          });
-          walk(text);
-          text.dataset.split = '1';
-        }
-        const tokens = $$('.mw, .pill', text);
-        const n = tokens.length;
+      heroEls = {
+        intro: $('[data-hero-intro]'), chaps: $$('.chap'), buy: $('[data-hero-buy]'),
+        count: $('[data-hero-count]'), bar: $('[data-hero-bar]'), scroll: $('[data-hero-scroll]'), fade: $('[data-hero-fade]')
+      };
+      if (!reduced() && hasGL) {
         ST.create({
-          trigger: text, start: 'top 82%', end: 'bottom 42%', scrub: true,
-          onUpdate: self => tokens.forEach((t, i) => {
-            const o = clamp((self.progress * (n + 5) - i) / 5, 0, 1);
-            if (t.classList.contains('pill')) { t.style.width = `${(o * 2.1).toFixed(3)}em`; t.style.opacity = o.toFixed(3); }
-            else t.style.setProperty('--o', (.14 + o * .86).toFixed(3));
-          })
+          trigger: sec, start: 'top top', end: () => `+=${innerHeight * (mobile() ? 3.2 : 4)}`,
+          pin: '.hero__pin', scrub: true, anticipatePin: 1,
+          onUpdate: self => { heroState.progress = self.progress; if (heroApi) heroApi.setProgress(self.progress); heroUI(self.progress); }
         });
+        heroUI(heroState.progress);
+      } else {
+        heroEls.chaps.forEach(c => { c.style.display = 'none'; });
+        heroEls.buy.style.display = 'none';
       }
 
-      // collection: vertical scroll walks sideways through the bottles
-      const track = $('[data-col-track]'), bar = $('[data-col-bar]'), count = $('[data-col-i]');
-      if (track && !mobile()) {
-        const dist = () => Math.max(0, track.scrollWidth - innerWidth);
-        const cards = $$('.ccard', track);
-        gsap.to(track, {
-          x: () => -dist(), ease: 'none',
-          scrollTrigger: {
-            trigger: '.collection', start: 'top top', end: () => `+=${dist() + innerHeight * .2}`,
-            pin: '.collection__pin', scrub: true, invalidateOnRefresh: true, anticipatePin: 1,
-            onUpdate: self => {
-              bar.style.setProperty('--cp', self.progress.toFixed(4));
-              count.textContent = String(Math.min(6, Math.round(self.progress * 5) + 1)).padStart(2, '0');
-              const vc = innerWidth / 2;
-              cards.forEach(c => { const r = c.getBoundingClientRect(); const a = $('.ccard__img', c); if (a) a.style.setProperty('--px', `${((r.left + r.width / 2 - vc) * -.05).toFixed(1)}px`); });
-            }
-          }
-        });
-      } else if (track) {
-        track.addEventListener('scroll', () => {
-          const p = track.scrollLeft / Math.max(1, track.scrollWidth - track.clientWidth);
-          bar.style.setProperty('--cp', p.toFixed(3));
-          count.textContent = String(Math.min(6, Math.round(p * 5) + 1)).padStart(2, '0');
-        }, { passive: true });
-      }
-
-      // notes: each card sinks as the next one slides over it
-      const cards = $$('.stack__card');
-      cards.forEach((c, i) => {
-        gsap.fromTo($('.stack__img img', c), { scale: 1.2 }, { scale: 1, ease: 'none', scrollTrigger: { trigger: c, start: 'top bottom', end: 'top 20%', scrub: true } });
-        if (i < cards.length - 1) {
-          gsap.to(c, { scale: .9, '--shade': .62, ease: 'none', scrollTrigger: { trigger: cards[i + 1], start: 'top 95%', end: 'top 20%', scrub: true } });
-        }
+      // images drift inside their frames
+      $$('[data-parallax]').forEach(im => {
+        gsap.fromTo(im, { yPercent: -7 }, { yPercent: 2, ease: 'none', scrollTrigger: { trigger: im.parentElement, start: 'top bottom', end: 'bottom top', scrub: true } });
       });
+      gsap.fromTo('.spot__inset', { yPercent: 22 }, { yPercent: -12, ease: 'none', scrollTrigger: { trigger: '.spot__media', start: 'top bottom', end: 'bottom top', scrub: true } });
 
-      // ritual: the photograph opens to fill the screen
-      const frame = $('[data-ritual-frame]');
-      if (frame) {
-        const tl = gsap.timeline({ scrollTrigger: { trigger: '.ritual', start: 'top top', end: () => `+=${innerHeight * 1.6}`, pin: '.ritual__pin', scrub: true, anticipatePin: 1 } });
-        tl.fromTo(frame, { clipPath: getComputedStyle(frame).clipPath }, { clipPath: 'inset(0% 0% 0% 0% round 0px)', ease: 'none', duration: 1 }, 0)
-          .fromTo($('img', frame), { scale: 1.3 }, { scale: 1, ease: 'none', duration: 1 }, 0)
-          .fromTo(frame, { '--dim': 0 }, { '--dim': 1, ease: 'none', duration: .5 }, .5)
-          .from('.ritual__title .line > *', { yPercent: 115, stagger: .08, duration: .4, ease: 'power3.out' }, .45)
-          .from('.ritual__copy .label, .ritual__sub', { opacity: 0, y: 20, duration: .3 }, .6);
-      }
+      // numbers count up once
+      $$('[data-count]').forEach(el => {
+        const to = +el.dataset.count, o = { v: 0 };
+        el.textContent = '0';
+        ST.create({ trigger: el, start: 'top 88%', once: true, onEnter: () => gsap.to(o, { v: to, duration: 2.2, ease: 'power3.out', onUpdate: () => { el.textContent = Math.round(o.v); } }) });
+      });
+      gsap.from('.num', { y: 40, opacity: 0, duration: 1.2, ease: 'expo.out', stagger: .1, scrollTrigger: { trigger: '.nums__grid', start: 'top 85%' } });
 
       reveals($('[data-view="home"]'));
     });
@@ -505,11 +455,11 @@
       splitWords(el);
       gsap.from($$('.w > span', el), { yPercent: 115, duration: 1.3, ease: 'expo.out', stagger: .06, scrollTrigger: { trigger: el, start: 'top 88%' } });
     });
-    $$('.post, .step, .pcard, .act, .mem', scope).forEach(el => {
-      gsap.from(el, { y: 50, opacity: 0, duration: 1.2, ease: 'expo.out', scrollTrigger: { trigger: el, start: 'top 92%' } });
+    $$('.post, .step, .pcard, .act, .mem, .note, .pyr div', scope).forEach(el => {
+      gsap.from(el, { y: 50, opacity: 0, duration: 1.2, ease: 'expo.out', scrollTrigger: { trigger: el, start: 'top 94%' } });
     });
-    $$('.post__img img, .step figure img, .act figure img, .contact__info img', scope).forEach(im => {
-      gsap.fromTo(im, { scale: 1.25 }, { scale: 1, ease: 'none', scrollTrigger: { trigger: im, start: 'top bottom', end: 'bottom top', scrub: true } });
+    $$('.post__img img, .step figure img, .act figure img, .contact__info img, .note__img img', scope).forEach(im => {
+      gsap.fromTo(im, { scale: 1.18 }, { scale: 1, ease: 'none', scrollTrigger: { trigger: im, start: 'top bottom', end: 'bottom top', scrub: true } });
     });
     const meters = $('.meters', scope);
     if (meters) ST.create({ trigger: meters, start: 'top 85%', onEnter: () => meters.classList.add('is-in') });
@@ -518,9 +468,9 @@
   function footer() {
     const word = $('.foot__word');
     if (!word || !gsap) return;
-    gsap.from($$('span', word), { yPercent: 100, opacity: 0, duration: 1.6, ease: 'expo.out', stagger: .08, scrollTrigger: { trigger: word, start: 'top 95%' } });
+    gsap.fromTo(word, { yPercent: 40, opacity: 0 }, { yPercent: 8, opacity: 1, duration: 1.8, ease: 'expo.out', scrollTrigger: { trigger: word, start: 'top 98%' } });
     reveals($('.foot'));
-    if (fine) word.addEventListener('pointermove', e => { const r = word.getBoundingClientRect(); word.style.setProperty('--sheen', `${((e.clientX - r.left) / r.width * 100).toFixed(1)}%`); });
+    gsap.from('.perks__list li', { y: 24, opacity: 0, duration: 1, ease: 'expo.out', stagger: .08, scrollTrigger: { trigger: '.perks', start: 'top 92%' } });
   }
 
   /* translator: a memory becomes a fragrance */
@@ -563,7 +513,7 @@
       scrollToEl(result);
       result.focus({ preventScroll: true });
     });
-    $('[data-tr-add]').addEventListener('click', e => { if (chosen) bagAdd(chosen, defaultMl(chosen), 1, e.currentTarget); });
+    $('[data-tr-add]').addEventListener('click', e => { if (chosen) bagAdd(chosen, defaultMl(chosen), 1, $('.tr__card')); });
     $('[data-tr-again]').addEventListener('click', () => {
       result.hidden = true;
       $$('input[name="memory"]', form).forEach(i => { i.checked = false; });
@@ -578,10 +528,12 @@
      --------------------------------------------------------------------- */
   const pcardHTML = (p, k = 0) => `
     <article class="pcard" style="--k:${k}">
-      <a class="pcard__img" href="#${p.key}" data-cursor="View" aria-label="${esc(p.name)}">${img(p.img, '(max-width: 640px) 92vw, (max-width: 1180px) 46vw, 31vw')}<img src="${SRC(p.reveal)}" alt="" aria-hidden="true" loading="lazy"><span class="pcard__no label">No. ${p.no}</span></a>
-      <button class="pcard__add" type="button" data-add="${p.key}" aria-label="Add ${esc(p.name)} to bag">Add<svg aria-hidden="true"><use href="#i-plus"/></svg></button>
+      <div class="pcard__media">
+        <a class="pcard__img" href="#${p.key}" aria-label="${esc(p.name)}, ${esc(p.mood)}">${img(p.img, '(max-width: 640px) 80vw, (max-width: 1180px) 33vw, 25vw')}<img src="${SRC(p.reveal)}" alt="" aria-hidden="true" loading="lazy"><span class="pcard__no label">${p.set ? 'The set' : `No. ${p.no}`}</span>${p.set ? '<span class="pcard__tag label">Try all six</span>' : ''}</a>
+        <button class="pcard__add" type="button" data-add="${p.key}" aria-label="Add ${esc(p.name)} to bag"><span>Add to bag</span><svg aria-hidden="true"><use href="#i-plus"/></svg></button>
+      </div>
       <div class="pcard__meta"><h3 class="pcard__name"><a href="#${p.key}">${esc(p.name)}</a></h3><span class="pcard__price">${money(p.price)}</span></div>
-      <p class="pcard__mood">${esc(p.mood)}</p>
+      <p class="pcard__mood">${esc(p.mood)}${p.set ? '' : ' · 50 ml'}</p>
     </article>`;
 
   const shopState = { filter: 'all', sort: 'featured' };
@@ -690,7 +642,7 @@
     }
   }
 
-  const postHTML = a => `<button class="post" type="button" data-read="${a.key}" data-cursor="Read">
+  const postHTML = a => `<button class="post" type="button" data-read="${a.key}">
       <figure class="post__img">${img(a.img, '(max-width: 900px) 92vw, 33vw')}</figure>
       <span class="post__k label">${esc(a.cat)} · ${a.mins} min read</span>
       <span class="post__t">${esc(a.title)}</span>
@@ -718,7 +670,7 @@
   function openDialog(id) {
     const dlg = d.getElementById(id);
     if (!dlg || dlg.open) return;
-    islandApi.close();
+    headerApi.close();
     const others = $$('dialog[open]').filter(x => x !== dlg);
     const go = () => {
       dlg.classList.remove('is-closing');
@@ -785,12 +737,12 @@
   function renderBag() {
     const n = bagCount(), sub = bagSub();
     $$('[data-bag-count]').forEach(el => { el.textContent = n; });
-    const b = $('.island__bag');
+    const b = $('.hdr__bag');
     if (b) b.setAttribute('aria-label', `Bag, ${n} ${n === 1 ? 'item' : 'items'}`);
     const list = $('[data-bag-items]');
     $('[data-bag-empty]').hidden = n > 0; $('[data-bag-foot]').hidden = n === 0; $('[data-bag-ship]').hidden = n === 0; list.hidden = n === 0;
     const left = FREE - sub;
-    $('[data-bag-ship-t]').textContent = left > 0 ? `${money(left)} away from free shipping` : 'Shipping is on us.';
+    $('[data-bag-ship-t]').textContent = left > 0 ? `${money(left)} away from complimentary delivery` : 'Delivery is on us.';
     $('[data-bag-ship-bar]').style.setProperty('--v', clamp(sub / FREE, 0, 1).toFixed(3));
     list.innerHTML = bag.items.map((it, idx) => {
       const p = P[it.key], size = sizesFor(p).find(s => s.ml === it.ml) || sizesFor(p)[0];
@@ -812,14 +764,14 @@
     saveBag();
     fly(fromEl, p).then(() => {
       renderBag();
-      const b = $('.island__bag');
+      const b = $('.hdr__bag');
       if (b) restart(b, 'is-bump');
       const size = sizesFor(p).find(s => s.ml === ml);
       toast(`${esc(p.name)}, ${esc(size ? size.label : '')}, is in your bag.`, { label: 'View bag', fn: () => openDialog('bag') });
     });
   }
   function fly(fromEl, p) {
-    const target = $('.island__bag');
+    const target = $('.hdr__bag');
     if (reduced() || !gsap || !fromEl || !target) return Promise.resolve();
     const a = fromEl.getBoundingClientRect(), b = target.getBoundingClientRect();
     const el = d.createElement('div');
@@ -961,7 +913,7 @@
      8. ROUTER, LOADER, BOOT
      --------------------------------------------------------------------- */
   const VIEWS = ['home', 'shop', 'product', 'house', 'journal', 'contact', 'checkout'];
-  const HOME_ANCHORS = ['finder', 'notes', 'collection', 'top'];
+  const HOME_ANCHORS = ['finder', 'notes', 'collection', 'spotlight', 'top'];
   const TITLES = { home: 'MUSE · Maison de parfum', shop: 'Collection · MUSE', house: 'House · MUSE', journal: 'Journal · MUSE', contact: 'Contact · MUSE', checkout: 'Checkout · MUSE' };
   const WORDS = { home: 'MUSE', shop: 'The collection', house: 'The house', journal: 'Journal', contact: 'Say hello', checkout: 'Checkout' };
   let current = null, viewCtx = null, navigating = false;
@@ -988,12 +940,13 @@
     if (route.view === 'checkout') { if (co.step === 3) coShow(0); else renderSummary(); }
     if (route.view === 'shop') renderShop();
     d.title = route.view === 'product' ? `${P[route.key].name} · MUSE` : TITLES[route.view];
-    islandApi.current(route);
+    headerApi.current(route);
+    headerApi.close();
     current = route;
     if (heroApi) heroApi.setVisible(route.view === 'home');
     viewCtx = buildView(route.view);
     if (ST) ST.refresh();
-    islandApi.tone();
+    headerApi.tone();
   }
 
   function place(route) {
@@ -1039,7 +992,8 @@
   async function navigate(route, initial) {
     const same = current && current.view === route.view && (route.view !== 'product' || current.key === route.key);
     if (same) {
-      islandApi.current(route);
+      headerApi.current(route);
+      headerApi.close();
       if (route.anchor && route.anchor !== 'top') scrollToEl(d.getElementById(route.anchor));
       else scrollTop();
       return;
@@ -1098,8 +1052,9 @@
     root.classList.add('is-ready');
     if (heroApi) heroApi.start();
     if (gsap && !reduced() && current && current.view === 'home') {
-      gsap.from('.hero__title .line > *', { yPercent: 115, duration: 1.6, ease: 'expo.out', stagger: .12, delay: .5 });
-      gsap.from('.hero__sub, .hero__cta, .hero__right, .hero__steps, .hero__kicker', { y: 24, opacity: 0, duration: 1.4, ease: 'expo.out', stagger: .08, delay: .8 });
+      gsap.from('.hero__title .line > *', { yPercent: 115, duration: 1.8, ease: 'expo.out', stagger: .14, delay: 1.1 });
+      gsap.from('.hero__eyebrow, .hero__sub, .hero__cta, .hero__meter, .hero__scroll', { y: 24, opacity: 0, duration: 1.4, ease: 'expo.out', stagger: .09, delay: 1.4 });
+      gsap.from('.hdr__bar > *', { y: -16, opacity: 0, duration: 1.2, ease: 'expo.out', stagger: .06, delay: 1.2, clearProps: 'opacity,transform' });
     }
   }
 
@@ -1109,7 +1064,7 @@
       if (!t) return;
       if (t.matches('[data-open]')) { openDialog(t.dataset.open); return; }
       if (t.matches('[data-close]')) { closeDialog(t.closest('dialog')); return; }
-      if (t.matches('[data-add]')) { e.preventDefault(); const card = t.closest('.pcard, .ccard'); bagAdd(t.dataset.add, null, 1, card ? $('img', card) : t); return; }
+      if (t.matches('[data-add]')) { e.preventDefault(); const card = t.closest('.pcard'); bagAdd(t.dataset.add, null, 1, card ? $('.pcard__img', card) : t); return; }
       if (t.matches('[data-bq]')) {
         const it = bag.items[+t.dataset.i];
         if (!it) return;
@@ -1144,14 +1099,13 @@
     else root.classList.add('no-gsap');
     if (ST) ST.config({ ignoreMobileResize: true });
 
-    renderCollection();
+    carousel();
     renderPosts();
     renderBag();
     curtain.el = $('.curtain'); curtain.path = $('[data-curtain-path]'); curtain.word = $('[data-curtain-word]');
     if (gsap) smoothScroll();
-    island();
-    cursor();
-    magnetic();
+    header();
+    spotlight();
     translator();
     shop();
     pdp();
@@ -1162,7 +1116,7 @@
     clicks();
     if (gsap) footer();
 
-    const go3d = () => { initHero3D(); };
+    const go3d = () => { initHero(); };
     if (window.MuseHero) go3d(); else addEventListener('musehero', go3d, { once: true });
 
     navigate(parse(location.hash), true);

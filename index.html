@@ -4,8 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>MUSE · Maison de parfum</title>
-<meta name="description" content="MUSE eau de parfum. Six signatures made in small batches, in refillable glass. Ambre 01, Fleur 02, Cèdre 03, Fumée 04, Prisme 05 and Soleil 06.">
-<meta name="theme-color" content="#1a0508">
+<meta name="description" content="MUSE eau de parfum. Six signatures made in small batches and poured by hand into heavy, refillable glass. Ambre 01, Fleur 02, Cèdre 03, Fumée 04, Prisme 05 and Soleil 06.">
+<meta name="theme-color" content="#0b0a09">
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -24,7 +24,7 @@
 <script src="assets/vendor/lenis.min.js" defer></script>
 <script src="assets/js/muse.js" defer></script>
 <script type="module">
-  import { createHero } from './assets/js/hero3d.js';
+  import { createHero } from './assets/js/hero.js';
   window.MuseHero = { createHero };
   window.dispatchEvent(new Event('musehero'));
 </script>
@@ -34,16 +34,22 @@
 
 <svg class="defs" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg">
   <defs>
-    <symbol id="i-arrow" viewBox="0 0 16 16"><path d="M3 13 13 3M5.5 3H13v7.5" fill="none" stroke="currentColor" stroke-width="1.2"/></symbol>
-    <symbol id="i-close" viewBox="0 0 24 24"><path d="m5 5 14 14M19 5 5 19" stroke="currentColor" stroke-width="1.3"/></symbol>
-    <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="1.3"/></symbol>
-    <symbol id="i-minus" viewBox="0 0 24 24"><path d="M5 12h14" stroke="currentColor" stroke-width="1.3"/></symbol>
-    <symbol id="i-search" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5" fill="none" stroke="currentColor" stroke-width="1.3"/><path d="m15.5 15.5 5 5" stroke="currentColor" stroke-width="1.3"/></symbol>
+    <symbol id="i-arrow" viewBox="0 0 16 16"><path d="M1 8h13M9 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.1"/></symbol>
+    <symbol id="i-arrow-l" viewBox="0 0 16 16"><path d="M15 8H2M7 3 2 8l5 5" fill="none" stroke="currentColor" stroke-width="1.1"/></symbol>
+    <symbol id="i-close" viewBox="0 0 24 24"><path d="m5 5 14 14M19 5 5 19" stroke="currentColor" stroke-width="1.2"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="1.2"/></symbol>
+    <symbol id="i-minus" viewBox="0 0 24 24"><path d="M5 12h14" stroke="currentColor" stroke-width="1.2"/></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5" fill="none" stroke="currentColor" stroke-width="1.2"/><path d="m15.5 15.5 5 5" stroke="currentColor" stroke-width="1.2"/></symbol>
+    <symbol id="i-chev" viewBox="0 0 12 12"><path d="m2.5 4.5 3.5 3.5 3.5-3.5" fill="none" stroke="currentColor" stroke-width="1.1"/></symbol>
     <symbol id="i-star" viewBox="0 0 24 24"><path d="M12 0c.6 6.9 5.1 11.4 12 12-6.9.6-11.4 5.1-12 12-.6-6.9-5.1-11.4-12-12C6.9 11.4 11.4 6.9 12 0Z" fill="currentColor"/></symbol>
+    <symbol id="i-truck" viewBox="0 0 32 32"><path d="M3 9h16v13H3zM19 13h6l4 5v4h-10" fill="none" stroke="currentColor" stroke-width="1.1"/><circle cx="9" cy="23.5" r="2.5" fill="none" stroke="currentColor" stroke-width="1.1"/><circle cx="24" cy="23.5" r="2.5" fill="none" stroke="currentColor" stroke-width="1.1"/></symbol>
+    <symbol id="i-vial" viewBox="0 0 32 32"><path d="M12 4h8M13 4v4h6V4M11 8h10v18a2 2 0 0 1-2 2h-6a2 2 0 0 1-2-2z M11 17h10" fill="none" stroke="currentColor" stroke-width="1.1"/></symbol>
+    <symbol id="i-return" viewBox="0 0 32 32"><path d="M9 12h13a6 6 0 0 1 0 12h-8M9 12l5-5M9 12l5 5" fill="none" stroke="currentColor" stroke-width="1.1"/></symbol>
+    <symbol id="i-refill" viewBox="0 0 32 32"><path d="M9 11h14v15a2 2 0 0 1-2 2H11a2 2 0 0 1-2-2zM13 11V7h6v4M16 4v-1M12 19c2-2 6 2 8 0" fill="none" stroke="currentColor" stroke-width="1.1"/></symbol>
   </defs>
 </svg>
 
-<!-- Preloader: counts the 3D scene in -->
+<!-- Preloader: holds the stage dark until the bottle and fonts are ready -->
 <div class="loader" aria-hidden="true">
   <div class="loader__inner">
     <p class="loader__word"><span>M</span><span>U</span><span>S</span><span>E</span></p>
@@ -53,56 +59,69 @@
   <svg class="loader__curtain" viewBox="0 0 100 100" preserveAspectRatio="none"><path data-load-path d="M0 0H100V100H0Z"/></svg>
 </div>
 
-<!-- ============ THE ISLAND: a glass navigation that morphs into its menus ============ -->
-<header class="island" id="island" data-tone="dark">
-  <div class="island__shell" data-shell>
-    <div class="island__bar" data-bar>
-      <a class="island__logo" href="#home" aria-label="MUSE, home"><span>M</span><span>U</span><span>S</span><span>E</span></a>
-      <nav class="island__links" aria-label="Main" data-links>
-        <span class="island__blob" aria-hidden="true" data-blob></span>
-        <button class="island__link" type="button" data-panel="collection" aria-expanded="false" aria-controls="panel-collection"><span>Collection</span></button>
-        <button class="island__link" type="button" data-panel="notes" aria-expanded="false" aria-controls="panel-notes"><span>Notes</span></button>
-        <a class="island__link" href="#house" data-route="house"><span>House</span></a>
-        <a class="island__link" href="#journal" data-route="journal"><span>Journal</span></a>
-        <a class="island__link" href="#contact" data-route="contact"><span>Contact</span></a>
-      </nav>
-      <div class="island__tools">
-        <button class="island__icon" type="button" data-open="search" aria-label="Search"><svg aria-hidden="true"><use href="#i-search"/></svg></button>
-        <button class="island__bag" type="button" data-open="bag" aria-label="Bag, 0 items"><span>Bag</span><b data-bag-count>0</b></button>
-        <button class="island__menu" type="button" data-mobile-menu aria-expanded="false" aria-controls="island-mobile" aria-label="Open menu"><i></i><i></i></button>
-      </div>
-      <span class="island__progress" aria-hidden="true"><i data-progress></i></span>
+<!-- ============ HEADER ============ -->
+<header class="hdr" id="hdr" data-tone="dark">
+  <div class="hdr__note" aria-label="Store notices">
+    <div class="hdr__ticker" data-ticker>
+      <span class="is-on">Complimentary delivery on orders over €150</span>
+      <span>Two samples of your choice with every order</span>
+      <span>Refill any MUSE bottle, for life</span>
     </div>
+  </div>
+  <div class="hdr__bar wrap">
+    <button class="hdr__burger" type="button" data-menu-btn aria-expanded="false" aria-controls="menu" aria-label="Open menu"><i></i><i></i></button>
+    <nav class="hdr__nav hdr__nav--l" aria-label="Main">
+      <button class="hdr__link" type="button" data-mega-btn aria-expanded="false" aria-controls="mega"><span>Shop</span><svg aria-hidden="true"><use href="#i-chev"/></svg></button>
+      <a class="hdr__link" href="#set" data-route="set"><span>Discovery set</span></a>
+      <a class="hdr__link" href="#house" data-route="house"><span>The house</span></a>
+    </nav>
+    <a class="hdr__logo" href="#home" aria-label="MUSE, home">MUSE</a>
+    <nav class="hdr__nav hdr__nav--r" aria-label="Secondary">
+      <a class="hdr__link hdr__hide-s" href="#journal" data-route="journal"><span>Journal</span></a>
+      <a class="hdr__link hdr__hide-s" href="#contact" data-route="contact"><span>Contact</span></a>
+      <button class="hdr__icon" type="button" data-open="search" aria-label="Search"><svg aria-hidden="true"><use href="#i-search"/></svg></button>
+      <button class="hdr__bag" type="button" data-open="bag" aria-label="Bag, 0 items"><span>Bag</span><b data-bag-count>0</b></button>
+    </nav>
+  </div>
 
-    <div class="island__panels" data-panels>
-      <div class="ipanel" id="panel-collection" data-ipanel="collection" hidden>
-        <div class="ipanel__head"><p class="label">Six signatures</p><a class="link" href="#shop">See the whole collection</a></div>
-        <ul class="ipanel__products" role="list" data-ipanel-products></ul>
+  <div class="mega" id="mega" data-mega aria-hidden="true">
+    <div class="mega__inner wrap">
+      <div class="mega__col">
+        <p class="label">The six signatures</p>
+        <ul class="mega__list" role="list" data-mega-list></ul>
       </div>
-      <div class="ipanel" id="panel-notes" data-ipanel="notes" hidden>
-        <div class="ipanel__head"><p class="label">What we work with</p><a class="link" href="#notes">Three acts on skin</a></div>
-        <ul class="ipanel__notes" role="list">
-          <li><a href="#notes"><img src="assets/img/lemons-800.jpg" alt=""><span><b>Bergamot</b><em>Citrus bergamia</em></span></a></li>
-          <li><a href="#notes"><img src="assets/img/jasmine-star-800.jpg" alt=""><span><b>Jasmine</b><em>Jasminum sambac</em></span></a></li>
-          <li><a href="#notes"><img src="assets/img/cedar-bark-800.jpg" alt=""><span><b>Cedar</b><em>Cedrus atlantica</em></span></a></li>
-          <li><a href="#notes"><img src="assets/img/resin-800.jpg" alt=""><span><b>Labdanum</b><em>Cistus ladanifer</em></span></a></li>
+      <div class="mega__col mega__col--links">
+        <p class="label">Explore</p>
+        <ul role="list">
+          <li><a href="#shop">All fragrances</a></li>
+          <li><a href="#set">Discovery set</a></li>
+          <li><a href="#finder">Find your scent</a></li>
+          <li><a href="#notes">The notes</a></li>
+          <li><a href="#contact">Refills</a></li>
         </ul>
+        <a class="mega__promo" href="#set"><span class="label">New here?</span>Try all six for €38</a>
       </div>
-      <div class="ipanel ipanel--mobile" id="island-mobile" data-ipanel="mobile" hidden>
-        <nav class="mnav" aria-label="Menu">
-          <a href="#home"><span class="label">00</span>Home</a>
-          <a href="#shop"><span class="label">01</span>Collection</a>
-          <a href="#notes"><span class="label">02</span>Notes</a>
-          <a href="#finder"><span class="label">03</span>Find your scent</a>
-          <a href="#house"><span class="label">04</span>House</a>
-          <a href="#journal"><span class="label">05</span>Journal</a>
-          <a href="#contact"><span class="label">06</span>Contact</a>
-        </nav>
-        <ul class="mnav__products" role="list" data-mnav-products></ul>
-      </div>
+      <a class="mega__feature" href="#ambre" data-mega-feature>
+        <figure><img data-mega-img src="assets/img/pack-ambre-800.jpg" alt="" width="800" height="1000"></figure>
+        <span class="mega__cap"><b data-mega-name>Ambre 01</b><em data-mega-mood>Warm and resinous</em></span>
+      </a>
     </div>
   </div>
 </header>
+<div class="scrim" data-scrim aria-hidden="true"></div>
+
+<div class="menu" id="menu" data-menu aria-hidden="true">
+  <nav class="menu__nav" aria-label="Menu">
+    <a href="#shop"><span>01</span>Shop all</a>
+    <a href="#set"><span>02</span>Discovery set</a>
+    <a href="#finder"><span>03</span>Find your scent</a>
+    <a href="#house"><span>04</span>The house</a>
+    <a href="#journal"><span>05</span>Journal</a>
+    <a href="#contact"><span>06</span>Contact</a>
+  </nav>
+  <ul class="menu__products" role="list" data-menu-products></ul>
+  <p class="menu__foot label">Complimentary delivery on orders over €150</p>
+</div>
 
 <main id="app" tabindex="-1">
 
@@ -111,112 +130,181 @@
      ===================================================================== -->
 <div class="view" data-view="home">
 
-  <section class="hero" id="top" aria-labelledby="hero-title">
+  <!-- 1. Hero: scroll lifts the cap, presses the atomiser and releases the scent -->
+  <section class="hero" id="top" data-tone="dark" aria-labelledby="hero-title">
     <div class="hero__pin">
-      <div class="hero__stage" data-hero-stage data-cursor="Drag">
-        <img class="hero__fallback" src="assets/img/amber-satin-1600.jpg" alt="A round bottle of amber perfume with a gold cap on cream satin">
-        <canvas class="hero__gl" data-hero-canvas aria-hidden="true"></canvas>
+      <div class="hero__stage" data-hero-stage>
+        <img class="hero__still" src="assets/img/hero-still-1600.jpg" srcset="assets/img/hero-still-800.jpg 800w, assets/img/hero-still-1600.jpg 1600w" sizes="100vw" alt="A rectangular MUSE flacon of amber perfume with its gold cap set beside it, a cloud of scent drifting from the atomiser">
+        <canvas class="hero__gl" data-hero-gl aria-hidden="true"></canvas>
+        <canvas class="hero__smoke" data-hero-smoke aria-hidden="true"></canvas>
       </div>
+      <div class="hero__shade" aria-hidden="true"></div>
       <div class="hero__ui wrap">
-        <p class="hero__kicker label"><span>Maison de parfum</span><span>Made in small batches</span></p>
-        <div class="hero__left">
-          <h1 class="hero__title" id="hero-title"><span class="sr-only">MUSE. </span><span class="line"><span>A feeling,</span></span> <span class="line"><em>bottled.</em></span></h1>
-          <p class="hero__sub">Six eau de parfum signatures, poured by hand into glass you keep for life.</p>
+        <div class="hero__intro" data-hero-intro>
+          <p class="label hero__eyebrow">Eau de parfum <span>No. 01</span> Ambre</p>
+          <h1 class="hero__title" id="hero-title"><span class="line"><span>A feeling,</span></span> <span class="line"><em>bottled.</em></span></h1>
+          <p class="hero__sub">Six signatures, composed in small batches and poured by hand into heavy glass you keep for life.</p>
           <div class="hero__cta">
-            <a class="btn btn--gold" href="#shop" data-magnetic><span>Shop the collection</span><svg aria-hidden="true"><use href="#i-arrow"/></svg></a>
-            <a class="btn btn--line" href="#finder"><span>Find your scent</span></a>
+            <a class="btn btn--light" href="#shop"><span>Shop the collection</span></a>
+            <a class="btn btn--ghost" href="#ambre"><span>Discover Ambre 01</span></a>
           </div>
         </div>
-        <div class="hero__right" aria-live="polite">
-          <div class="hero__scent is-on" data-hero-scent="0"><p class="label">No. 01 · Amber</p><p class="hero__name">Ambre 01</p><p class="hero__notes">Bergamot, saffron, labdanum</p><a class="link" href="#ambre">Discover Ambre 01</a></div>
-          <div class="hero__scent" data-hero-scent="1"><p class="label">No. 02 · Floral</p><p class="hero__name">Fleur 02</p><p class="hero__notes">Mandarin, jasmine sambac, white musk</p><a class="link" href="#fleur">Discover Fleur 02</a></div>
-          <div class="hero__scent" data-hero-scent="2"><p class="label">No. 03 · Woody</p><p class="hero__name">Cèdre 03</p><p class="hero__notes">Lime, Atlas cedar, oakmoss</p><a class="link" href="#cedre">Discover Cèdre 03</a></div>
+        <ol class="hero__chapters" role="list">
+          <li class="chap" data-chap="0"><span class="chap__n">01</span><div><h2 class="chap__t">Unveil</h2><p>The cap lifts away, and the first breath of amber slips out of the glass.</p></div></li>
+          <li class="chap" data-chap="1"><span class="chap__n">02</span><div><h2 class="chap__t">Release</h2><p>One press of the atomiser turns a single drop into a cloud of the finest mist.</p></div></li>
+          <li class="chap" data-chap="2"><span class="chap__n">03</span><div><h2 class="chap__t">Linger</h2><p>It rises, curls and settles on your skin, where it stays for twelve hours.</p></div></li>
+        </ol>
+        <div class="hero__buy" data-hero-buy>
+          <p class="label">No. 01 · Amber</p>
+          <p class="hero__name">Ambre 01</p>
+          <p class="hero__notes">Bergamot, saffron, labdanum. Warm, resinous and golden.</p>
+          <div class="hero__buyrow">
+            <button class="btn btn--light" type="button" data-add="ambre"><span>Add to bag · €165</span></button>
+            <a class="link link--light" href="#ambre">View the fragrance</a>
+          </div>
         </div>
-        <div class="hero__steps" aria-hidden="true">
-          <span class="is-on" data-hero-step="0"><b>01</b> Ambre<i><em></em></i></span>
-          <span data-hero-step="1"><b>02</b> Fleur<i><em></em></i></span>
-          <span data-hero-step="2"><b>03</b> Cèdre<i><em></em></i></span>
+        <div class="hero__meter" aria-hidden="true"><span data-hero-count>00</span><i><b data-hero-bar></b></i><span>03</span></div>
+        <p class="hero__scroll label" data-hero-scroll><span>Scroll to open</span><i></i></p>
+      </div>
+      <div class="hero__fade" data-hero-fade aria-hidden="true"></div>
+    </div>
+  </section>
+
+  <!-- 2. Collection -->
+  <section class="sec collection" id="collection" data-tone="light" aria-labelledby="col-title">
+    <div class="wrap">
+      <header class="sec__head">
+        <div>
+          <p class="sec__k"><span class="sec__n">01</span>The collection</p>
+          <h2 class="h2" id="col-title" data-reveal>Six signatures. <em>One flacon.</em></h2>
         </div>
-        <p class="hero__hint label">Scroll to turn the bottle. Drag to spin it. Click to spray.</p>
-      </div>
-      <div class="hero__veil" aria-hidden="true"></div>
-    </div>
-  </section>
-
-  <section class="manifesto" data-tone="light" aria-label="What MUSE is">
-    <div class="wrap">
-      <p class="label manifesto__k">The house</p>
-      <p class="manifesto__text" data-words>We bottle <span class="pill"><img src="assets/img/gold-glass-800.jpg" alt=""></span> golden light, <span class="pill"><img src="assets/img/jasmine-star-800.jpg" alt=""></span> night flowers and <span class="pill"><img src="assets/img/smoke-violet-800.jpg" alt=""></span> old smoke, then let them unfold slowly on your skin.</p>
-      <div class="manifesto__foot">
-        <p>Every MUSE fragrance is weighed by the drop, rested for eight weeks and tried on skin, never only on paper.</p>
-        <a class="link" href="#house">Inside the house</a>
-      </div>
-    </div>
-  </section>
-
-  <section class="collection" id="collection" data-tone="dark" aria-labelledby="col-title">
-    <div class="collection__pin">
-      <header class="collection__head wrap">
-        <div><p class="label">The collection</p><h2 class="h2" id="col-title" data-reveal>Six signatures.</h2></div>
-        <p class="collection__count label"><span data-col-i>01</span> / 06</p>
+        <div class="sec__aside">
+          <p>Every MUSE shares the same heavy glass and gold cap. Only what is inside changes.</p>
+          <div class="arrows">
+            <button class="arrow" type="button" data-car="-1" aria-label="Previous fragrances"><svg aria-hidden="true"><use href="#i-arrow-l"/></svg></button>
+            <button class="arrow" type="button" data-car="1" aria-label="Next fragrances"><svg aria-hidden="true"><use href="#i-arrow"/></svg></button>
+          </div>
+        </div>
       </header>
-      <div class="collection__track" data-col-track></div>
-      <div class="collection__bar wrap" aria-hidden="true"><i data-col-bar></i></div>
+      <div class="car" data-car-track></div>
+      <div class="car__foot"><span class="car__bar" aria-hidden="true"><i data-car-bar></i></span><a class="link" href="#shop">Shop all fragrances</a></div>
     </div>
   </section>
 
-  <section class="notes" id="notes" data-tone="light" aria-labelledby="notes-title">
+  <!-- 3. Spotlight -->
+  <section class="sec spot" id="spotlight" data-tone="light" aria-labelledby="spot-title">
+    <div class="wrap spot__grid">
+      <div class="spot__media">
+        <figure class="spot__tile"><img data-parallax src="assets/img/pack-ambre-1600.jpg" srcset="assets/img/pack-ambre-800.jpg 800w, assets/img/pack-ambre-1600.jpg 1600w" sizes="(max-width: 900px) 92vw, 46vw" alt="Ambre 01, a rectangular glass flacon of amber perfume with a gold cap" loading="lazy"></figure>
+        <figure class="spot__inset"><img src="assets/img/resin-800.jpg" alt="A drop of red resin on a bare branch" loading="lazy"></figure>
+      </div>
+      <div class="spot__info">
+        <p class="sec__k"><span class="sec__n">02</span>Scent of the season</p>
+        <h2 class="spot__name" id="spot-title" data-reveal>Ambre 01</h2>
+        <p class="spot__mood">Warm and resinous</p>
+        <p class="spot__desc">Sun warmed resin and saffron over a glowing base of labdanum. Golden from the first spray, then softer, warmer and closer to skin as the evening goes on.</p>
+        <dl class="pyr">
+          <div><dt class="label">Top</dt><dd>Bergamot, pink pepper</dd></div>
+          <div><dt class="label">Heart</dt><dd>Saffron, orange blossom</dd></div>
+          <div><dt class="label">Base</dt><dd>Labdanum, vanilla, sandalwood</dd></div>
+        </dl>
+        <fieldset class="spot__sizes"><legend class="label">Size</legend><div class="sizes" data-spot-sizes></div></fieldset>
+        <div class="spot__buy">
+          <button class="btn btn--dark" type="button" data-spot-add><span data-spot-add-t>Add to bag · €165</span></button>
+          <a class="link" href="#ambre">Full details</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. Numbers -->
+  <section class="sec nums" data-tone="dark" aria-labelledby="nums-title">
     <div class="wrap">
-      <header class="notes__head">
-        <p class="label">The pyramid</p>
-        <h2 class="h2" id="notes-title" data-reveal>Three acts on skin.</h2>
-        <p class="notes__lede">A perfume is a short play. Each act is made of materials that evaporate at a different speed, so the scent you wear at noon is not the one you sprayed at nine.</p>
+      <header class="sec__head sec__head--center">
+        <p class="sec__k"><span class="sec__n">03</span>In numbers</p>
+        <h2 class="h2" id="nums-title" data-reveal>Made slowly, <em>on purpose.</em></h2>
       </header>
-      <div class="stack">
-        <article class="stack__card" style="--i:0">
-          <figure class="stack__img"><img src="assets/img/lemons-1600.jpg" srcset="assets/img/lemons-800.jpg 800w, assets/img/lemons-1600.jpg 1600w" sizes="(max-width: 900px) 92vw, 46vw" alt="A basket of yellow citrus fruit" loading="lazy"></figure>
-          <div class="stack__txt"><p class="label">Act I · Top note · The first ten minutes</p><h3>Bergamot</h3><p class="stack__latin">Citrus bergamia</p><p>Cold pressed from the peel. Bright, bitter and green, it is the handshake of a fragrance and the first thing to leave.</p><span class="stack__n">I</span></div>
-        </article>
-        <article class="stack__card" style="--i:1">
-          <figure class="stack__img"><img src="assets/img/jasmine-night-1600.jpg" srcset="assets/img/jasmine-night-800.jpg 800w, assets/img/jasmine-night-1600.jpg 1600w" sizes="(max-width: 900px) 92vw, 46vw" alt="Jasmine blossoms on a dark green shrub" loading="lazy"></figure>
-          <div class="stack__txt"><p class="label">Act II · Heart note · The first hours</p><h3>Jasmine</h3><p class="stack__latin">Jasminum sambac</p><p>Picked before sunrise, when the flowers smell strongest. Creamy, sweet, a little animal. The heart is where a perfume tells you who it is.</p><span class="stack__n">II</span></div>
-        </article>
-        <article class="stack__card" style="--i:2">
-          <figure class="stack__img"><img src="assets/img/resin-1600.jpg" srcset="assets/img/resin-800.jpg 800w, assets/img/resin-1600.jpg 1600w" sizes="(max-width: 900px) 92vw, 46vw" alt="A drop of red resin on a bare branch against green leaves" loading="lazy"></figure>
-          <div class="stack__txt"><p class="label">Act III · Base note · Into the evening</p><h3>Labdanum</h3><p class="stack__latin">Cistus ladanifer</p><p>A sticky resin from the rockrose shrub. Warm, leathery, faintly honeyed. It holds everything above it and stays on a scarf until morning.</p><span class="stack__n">III</span></div>
-        </article>
-      </div>
+      <ul class="nums__grid" role="list">
+        <li class="num"><p class="num__v"><span data-count="25">25</span><sup>%</sup></p><p class="num__t">Perfume oil</p><p class="num__d">in every bottle. Most eaux de parfum stop at fifteen.</p></li>
+        <li class="num"><p class="num__v"><span data-count="12">12</span><sup>h</sup></p><p class="num__t">On skin</p><p class="num__d">from one morning spray, and still there at dinner.</p></li>
+        <li class="num"><p class="num__v"><span data-count="8">8</span><sup>wk</sup></p><p class="num__t">Of rest</p><p class="num__d">in the dark before bottling, so the notes can settle.</p></li>
+        <li class="num"><p class="num__v"><span data-count="300">300</span></p><p class="num__t">Bottles a batch</p><p class="num__d">each one numbered by hand on its heavy glass base.</p></li>
+      </ul>
     </div>
   </section>
 
-  <section class="ritual" data-tone="dark" aria-labelledby="ritual-title">
-    <div class="ritual__pin">
-      <figure class="ritual__frame" data-ritual-frame><img src="assets/img/bottle-sun-1600.jpg" srcset="assets/img/bottle-sun-800.jpg 800w, assets/img/bottle-sun-1600.jpg 1600w" sizes="100vw" alt="Glass perfume bottles misting into warm light, casting long shadows on a golden surface" loading="lazy"></figure>
-      <div class="ritual__copy wrap">
-        <p class="label">The ritual</p>
-        <h2 class="ritual__title" id="ritual-title"><span class="line"><span>Two sprays.</span></span> <span class="line"><em>Then walk</em></span> <span class="line"><em>through the third.</em></span></h2>
-        <p class="ritual__sub">One on the wrist, one at the base of the throat, and one into the air in front of you. Step into it and keep walking.</p>
-      </div>
-    </div>
-  </section>
-
-  <section class="finder" id="finder" data-tone="light" aria-labelledby="tr-title">
+  <!-- 5. Notes -->
+  <section class="sec notes" id="notes" data-tone="light" aria-labelledby="notes-title">
     <div class="wrap">
-      <header class="finder__head">
-        <p class="label">Find your scent</p>
-        <h2 class="h2" id="tr-title" data-reveal>Tell us a memory.</h2>
-        <p class="finder__lede">Nobody has ever smelled a website, so we start with something you have already smelled. Choose a memory and we will translate it into a fragrance.</p>
+      <header class="sec__head">
+        <div>
+          <p class="sec__k"><span class="sec__n">04</span>The notes</p>
+          <h2 class="h2" id="notes-title" data-reveal>Three acts <em>on skin.</em></h2>
+        </div>
+        <div class="sec__aside"><p>A perfume is a short play. Each act evaporates at its own speed, so the scent you wear at noon is not the one you sprayed at nine.</p></div>
+      </header>
+      <div class="notes__grid">
+        <article class="note">
+          <figure class="note__img"><img src="assets/img/lemons-800.jpg" srcset="assets/img/lemons-800.jpg 800w, assets/img/lemons-1600.jpg 1600w" sizes="(max-width: 900px) 92vw, 31vw" alt="A basket of yellow citrus fruit" loading="lazy"></figure>
+          <p class="note__k label"><span>Act I</span><span>The first ten minutes</span></p>
+          <h3 class="note__t">Bergamot</h3>
+          <p class="note__latin">Citrus bergamia</p>
+          <p>Cold pressed from the peel. Bright, bitter and green, it is the handshake of a fragrance and the first thing to leave.</p>
+        </article>
+        <article class="note">
+          <figure class="note__img"><img src="assets/img/jasmine-night-800.jpg" srcset="assets/img/jasmine-night-800.jpg 800w, assets/img/jasmine-night-1600.jpg 1600w" sizes="(max-width: 900px) 92vw, 31vw" alt="Jasmine blossoms on a dark green shrub" loading="lazy"></figure>
+          <p class="note__k label"><span>Act II</span><span>The first hours</span></p>
+          <h3 class="note__t">Jasmine</h3>
+          <p class="note__latin">Jasminum sambac</p>
+          <p>Picked before sunrise, when the flowers smell strongest. Creamy, sweet, a little animal. The heart is where a perfume tells you who it is.</p>
+        </article>
+        <article class="note">
+          <figure class="note__img"><img src="assets/img/resin-800.jpg" srcset="assets/img/resin-800.jpg 800w, assets/img/resin-1600.jpg 1600w" sizes="(max-width: 900px) 92vw, 31vw" alt="A drop of red resin on a bare branch against green leaves" loading="lazy"></figure>
+          <p class="note__k label"><span>Act III</span><span>Into the evening</span></p>
+          <h3 class="note__t">Labdanum</h3>
+          <p class="note__latin">Cistus ladanifer</p>
+          <p>A sticky resin from the rockrose shrub. Warm, leathery, faintly honeyed. It holds everything above it and stays on a scarf until morning.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. Discovery set -->
+  <section class="setband" data-tone="light" aria-labelledby="set-title">
+    <div class="wrap setband__grid">
+      <div class="setband__txt">
+        <p class="sec__k"><span class="sec__n">05</span>Not sure yet?</p>
+        <h2 class="h2" id="set-title" data-reveal>All six, <em>for a week.</em></h2>
+        <p>Six 2 ml vials in a paper case. Wear one a day, on skin rather than paper, and let your skin decide which one is yours.</p>
+        <div class="setband__cta">
+          <button class="btn btn--dark" type="button" data-add="set"><span>Add the set · €38</span></button>
+          <a class="link" href="#set">What is inside</a>
+        </div>
+      </div>
+      <figure class="setband__img"><img data-parallax src="assets/img/pack-set-1600.jpg" srcset="assets/img/pack-set-800.jpg 800w, assets/img/pack-set-1600.jpg 1600w" sizes="(max-width: 900px) 92vw, 50vw" alt="Six small MUSE vials in amber, rose, green, smoke, aqua and gold, standing in an arc" loading="lazy"></figure>
+    </div>
+  </section>
+
+  <!-- 7. Find your scent -->
+  <section class="sec finder" id="finder" data-tone="light" aria-labelledby="tr-title">
+    <div class="wrap">
+      <header class="sec__head">
+        <div>
+          <p class="sec__k"><span class="sec__n">06</span>Find your scent</p>
+          <h2 class="h2" id="tr-title" data-reveal>Tell us <em>a memory.</em></h2>
+        </div>
+        <div class="sec__aside"><p>You cannot smell a screen, so we start with something you have already smelled. Choose a memory and we will translate it into a fragrance.</p></div>
       </header>
       <form class="tr" id="translator" novalidate>
         <fieldset>
           <legend class="sr-only">Choose a memory</legend>
           <div class="mems">
-            <label class="mem" data-cursor="Choose"><input type="radio" name="memory" value="honey"><img src="assets/img/liquid-gold-800.jpg" alt="" loading="lazy"><span class="mem__t">Honey on warm skin</span></label>
-            <label class="mem" data-cursor="Choose"><input type="radio" name="memory" value="night"><img src="assets/img/jasmine-night-800.jpg" alt="" loading="lazy"><span class="mem__t">Jasmine through an open window</span></label>
-            <label class="mem" data-cursor="Choose"><input type="radio" name="memory" value="storm"><img src="assets/img/cedar-bark-800.jpg" alt="" loading="lazy"><span class="mem__t">A forest after the storm</span></label>
-            <label class="mem" data-cursor="Choose"><input type="radio" name="memory" value="church"><img src="assets/img/smoke-violet-800.jpg" alt="" loading="lazy"><span class="mem__t">Candles in an old church</span></label>
-            <label class="mem" data-cursor="Choose"><input type="radio" name="memory" value="neon"><img src="assets/img/bottle-prism-800.jpg" alt="" loading="lazy"><span class="mem__t">Neon on wet streets</span></label>
-            <label class="mem" data-cursor="Choose"><input type="radio" name="memory" value="winter"><img src="assets/img/citrus-dried-800.jpg" alt="" loading="lazy"><span class="mem__t">Oranges in winter</span></label>
+            <label class="mem"><input type="radio" name="memory" value="honey"><img src="assets/img/liquid-gold-800.jpg" alt="" loading="lazy"><span class="mem__t">Honey on warm skin</span></label>
+            <label class="mem"><input type="radio" name="memory" value="night"><img src="assets/img/jasmine-night-800.jpg" alt="" loading="lazy"><span class="mem__t">Jasmine through an open window</span></label>
+            <label class="mem"><input type="radio" name="memory" value="storm"><img src="assets/img/cedar-bark-800.jpg" alt="" loading="lazy"><span class="mem__t">A forest after the storm</span></label>
+            <label class="mem"><input type="radio" name="memory" value="church"><img src="assets/img/smoke-violet-800.jpg" alt="" loading="lazy"><span class="mem__t">Candles in an old church</span></label>
+            <label class="mem"><input type="radio" name="memory" value="neon"><img src="assets/img/smoke-teal-800.jpg" alt="" loading="lazy"><span class="mem__t">Neon on wet streets</span></label>
+            <label class="mem"><input type="radio" name="memory" value="winter"><img src="assets/img/citrus-dried-800.jpg" alt="" loading="lazy"><span class="mem__t">Oranges in winter</span></label>
           </div>
         </fieldset>
         <div class="tr__row">
@@ -226,13 +314,13 @@
             <div class="tr__scale" aria-hidden="true"><span>Whisper</span><span>Speak</span><span>Shout</span></div>
           </div>
           <div class="tr__go">
-            <button class="btn btn--wine" type="submit" data-magnetic><span>Translate</span><svg aria-hidden="true"><use href="#i-arrow"/></svg></button>
+            <button class="btn btn--dark" type="submit"><span>Translate</span><svg aria-hidden="true"><use href="#i-arrow"/></svg></button>
             <p class="tr__msg" data-tr-msg aria-live="polite"></p>
           </div>
         </div>
       </form>
       <div class="tr__result" data-tr-result hidden tabindex="-1">
-        <a class="tr__card" href="#ambre" data-tr-link data-cursor="View"><img data-tr-img src="assets/img/amber-satin-800.jpg" alt=""></a>
+        <a class="tr__card" href="#ambre" data-tr-link><img data-tr-img src="assets/img/pack-ambre-800.jpg" alt=""></a>
         <div class="tr__why">
           <p class="label">Your translation</p>
           <p class="tr__eq" data-tr-eq></p>
@@ -240,7 +328,7 @@
           <p class="tr__mood" data-tr-mood></p>
           <p class="tr__wear" data-tr-wear></p>
           <div class="tr__acts">
-            <button class="btn btn--wine" type="button" data-tr-add><span>Add to bag</span><svg aria-hidden="true"><use href="#i-arrow"/></svg></button>
+            <button class="btn btn--dark" type="button" data-tr-add><span>Add to bag</span></button>
             <button class="link" type="button" data-tr-again>Translate another memory</button>
           </div>
         </div>
@@ -248,9 +336,16 @@
     </div>
   </section>
 
-  <section class="journal-teaser" data-tone="light" aria-labelledby="jt-title">
+  <!-- 8. Journal -->
+  <section class="sec journal-teaser" data-tone="light" aria-labelledby="jt-title">
     <div class="wrap">
-      <header class="jt__head"><div><p class="label">From the journal</p><h2 class="h2" id="jt-title" data-reveal>Notes on wearing the invisible.</h2></div><a class="link" href="#journal">Read every story</a></header>
+      <header class="sec__head">
+        <div>
+          <p class="sec__k"><span class="sec__n">07</span>From the journal</p>
+          <h2 class="h2" id="jt-title" data-reveal>Notes on wearing <em>the invisible.</em></h2>
+        </div>
+        <div class="sec__aside"><a class="link" href="#journal">Read every story</a></div>
+      </header>
       <div class="posts" data-posts="teaser"></div>
     </div>
   </section>
@@ -317,9 +412,9 @@
             <output aria-live="polite">1</output>
             <button type="button" data-q="1" aria-label="One more"><svg aria-hidden="true"><use href="#i-plus"/></svg></button>
           </div>
-          <button class="btn btn--wine pdp__add" type="button" data-pdp-add><span data-pdp-add-t>Add to bag · €165</span><svg aria-hidden="true"><use href="#i-arrow"/></svg></button>
+          <button class="btn btn--dark pdp__add" type="button" data-pdp-add><span data-pdp-add-t>Add to bag · €165</span><svg aria-hidden="true"><use href="#i-arrow"/></svg></button>
         </div>
-        <ul class="pdp__perks label" role="list"><li>Free shipping over €150</li><li>Two samples with every order</li><li>Returns within 30 days</li></ul>
+        <ul class="pdp__perks label" role="list"><li>Complimentary delivery over €150</li><li>Two samples with every order</li><li>Returns within 30 days</li></ul>
         <div class="acc">
           <div class="acc__item is-open"><h2><button type="button" aria-expanded="true" aria-controls="acc-notes" id="acc-notes-b">Notes<i></i></button></h2><div class="acc__body" id="acc-notes" role="region" aria-labelledby="acc-notes-b"><div><dl class="pdp__notes" data-pdp-notes></dl></div></div></div>
           <div class="acc__item"><h2><button type="button" aria-expanded="false" aria-controls="acc-wear" id="acc-wear-b">How to wear it<i></i></button></h2><div class="acc__body" id="acc-wear" role="region" aria-labelledby="acc-wear-b"><div><p data-pdp-wear></p></div></div></div>
@@ -349,7 +444,7 @@
   </section>
   <div class="buybar" data-buybar aria-hidden="true">
     <span class="buybar__name" data-buybar-name>Ambre 01</span>
-    <button class="btn btn--wine" type="button" data-buybar-add tabindex="-1"><span data-buybar-t>Add · €165</span></button>
+    <button class="btn btn--dark" type="button" data-buybar-add tabindex="-1"><span data-buybar-t>Add · €165</span></button>
   </div>
 </div>
 
@@ -388,7 +483,7 @@
     <div class="wrap cta-band__inner">
       <h2 class="h2" data-reveal>Come and smell it.</h2>
       <p>Studio visits are by appointment. Tell us when, and we will have the blotters ready.</p>
-      <a class="btn btn--gold" href="#contact" data-magnetic><span>Book a visit</span><svg aria-hidden="true"><use href="#i-arrow"/></svg></a>
+      <a class="btn btn--light" href="#contact"><span>Book a visit</span><svg aria-hidden="true"><use href="#i-arrow"/></svg></a>
     </div>
   </section>
 </div>
@@ -430,12 +525,12 @@
           <div class="field field--full"><label for="c-msg">Message</label><textarea id="c-msg" rows="5" required></textarea></div>
           <label class="check field--full"><input type="checkbox" id="c-ok" required><span>I agree that MUSE may store this message to reply to me.</span></label>
           <div class="form__foot field--full">
-            <button class="btn btn--wine" type="submit"><span>Send note</span><svg aria-hidden="true"><use href="#i-arrow"/></svg></button>
+            <button class="btn btn--dark" type="submit"><span>Send note</span><svg aria-hidden="true"><use href="#i-arrow"/></svg></button>
             <p class="form__msg" data-contact-msg aria-live="polite"></p>
           </div>
         </form>
         <aside class="contact__info">
-          <figure><img src="assets/img/bottle-frost-800.jpg" alt="A frosted glass perfume bottle in soft light with dried pink flowers" loading="lazy"></figure>
+          <figure><img src="assets/img/pipette-mono-800.jpg" alt="A perfumer's gloved hand holds a pipette above a glass bottle, in black and white" loading="lazy"></figure>
           <dl class="info">
             <div><dt class="label">Write</dt><dd>concierge@muse.example</dd></div>
             <div><dt class="label">Studio</dt><dd>Visits by appointment</dd></div>
@@ -482,7 +577,7 @@
             <div class="field"><label for="co-city">City</label><input id="co-city" type="text" autocomplete="address-level2" required></div>
             <div class="field"><label for="co-post">Postcode</label><input id="co-post" type="text" autocomplete="postal-code" required></div>
             <div class="field field--full"><label for="co-country">Country</label><input id="co-country" type="text" autocomplete="country-name" required></div>
-            <div class="form__foot field--full"><button class="btn btn--wine" type="submit"><span>Continue to delivery</span><svg aria-hidden="true"><use href="#i-arrow"/></svg></button><p class="form__msg" data-co-msg aria-live="polite"></p></div>
+            <div class="form__foot field--full"><button class="btn btn--dark" type="submit"><span>Continue to delivery</span><svg aria-hidden="true"><use href="#i-arrow"/></svg></button><p class="form__msg" data-co-msg aria-live="polite"></p></div>
           </form>
           <form class="form co__step" data-costep="1" novalidate hidden>
             <h2 class="co__h">Delivery</h2>
@@ -492,20 +587,20 @@
             </div>
             <label class="check field--full"><input type="checkbox" id="co-gift"><span>This is a gift. Wrap it, hide the prices, and add a card.</span></label>
             <div class="field field--full" data-gift-note hidden><label for="co-note">Card message</label><input id="co-note" type="text" maxlength="120" placeholder="For you, from me."></div>
-            <div class="form__foot field--full"><button class="link" type="button" data-co-back>Back</button><button class="btn btn--wine" type="submit"><span>Continue to payment</span><svg aria-hidden="true"><use href="#i-arrow"/></svg></button></div>
+            <div class="form__foot field--full"><button class="link" type="button" data-co-back>Back</button><button class="btn btn--dark" type="submit"><span>Continue to payment</span><svg aria-hidden="true"><use href="#i-arrow"/></svg></button></div>
           </form>
           <form class="form co__step" data-costep="2" novalidate hidden>
             <h2 class="co__h">Payment</h2>
             <div class="field field--full"><label for="co-card">Card number</label><input id="co-card" type="text" inputmode="numeric" autocomplete="cc-number" placeholder="4242 4242 4242 4242" required></div>
             <div class="field"><label for="co-exp">Expiry</label><input id="co-exp" type="text" inputmode="numeric" autocomplete="cc-exp" placeholder="MM / YY" required></div>
             <div class="field"><label for="co-cvc">Security code</label><input id="co-cvc" type="text" inputmode="numeric" autocomplete="cc-csc" placeholder="123" required></div>
-            <div class="form__foot field--full"><button class="link" type="button" data-co-back>Back</button><button class="btn btn--wine" type="submit"><span data-co-pay>Place order</span><svg aria-hidden="true"><use href="#i-arrow"/></svg></button><p class="form__msg" data-co-msg2 aria-live="polite"></p></div>
+            <div class="form__foot field--full"><button class="link" type="button" data-co-back>Back</button><button class="btn btn--dark" type="submit"><span data-co-pay>Place order</span><svg aria-hidden="true"><use href="#i-arrow"/></svg></button><p class="form__msg" data-co-msg2 aria-live="polite"></p></div>
           </form>
           <div class="co__step co__done" data-costep="3" hidden tabindex="-1">
             <span class="seal" aria-hidden="true"><svg><use href="#i-star"/></svg></span>
             <h2 class="co__h">Sealed and sent to the studio.</h2>
             <p>Order <b data-co-order>MUSE 00000</b>. In a real store, a confirmation would now be on its way to <b data-co-mail>you</b>.</p>
-            <a class="btn btn--wine" href="#shop"><span>Keep exploring</span><svg aria-hidden="true"><use href="#i-arrow"/></svg></a>
+            <a class="btn btn--dark" href="#shop"><span>Keep exploring</span><svg aria-hidden="true"><use href="#i-arrow"/></svg></a>
           </div>
         </div>
         <aside class="co__sum" aria-labelledby="sum-title">
@@ -525,27 +620,37 @@
 
 </main>
 
-<!-- ============ FOOTER ============ -->
+<!-- ============ SERVICES + FOOTER ============ -->
+<section class="perks" aria-label="Our promises">
+  <ul class="perks__list wrap" role="list">
+    <li><svg aria-hidden="true"><use href="#i-truck"/></svg><div><b>Complimentary delivery</b><span>On every order over €150</span></div></li>
+    <li><svg aria-hidden="true"><use href="#i-vial"/></svg><div><b>Two samples, always</b><span>Chosen by you at checkout</span></div></li>
+    <li><svg aria-hidden="true"><use href="#i-return"/></svg><div><b>Thirty day returns</b><span>On every unopened bottle</span></div></li>
+    <li><svg aria-hidden="true"><use href="#i-refill"/></svg><div><b>Refills for life</b><span>Keep the glass, change the scent</span></div></li>
+  </ul>
+</section>
+
 <footer class="foot" data-tone="dark">
   <div class="wrap">
     <div class="foot__top">
       <div class="foot__letters">
-        <h2 class="foot__title" data-reveal>Letters, never spam.</h2>
+        <p class="label">The letter</p>
+        <h2 class="foot__title" data-reveal>One letter a month. <em>Never spam.</em></h2>
         <form class="letters" data-letters novalidate>
           <label class="sr-only" for="letters-email">Your email</label>
-          <input id="letters-email" type="email" placeholder="Your email" autocomplete="email" required>
-          <button class="btn btn--gold" type="submit"><span>Subscribe</span></button>
+          <input id="letters-email" type="email" placeholder="Your email address" autocomplete="email" required>
+          <button class="btn btn--light" type="submit"><span>Subscribe</span></button>
         </form>
-        <p class="letters__msg" data-letters-msg aria-live="polite">One letter a month: new batches, refills and the stories behind the notes.</p>
+        <p class="letters__msg" data-letters-msg aria-live="polite">New batches, refills and the stories behind the notes.</p>
       </div>
       <div class="foot__cols">
-        <div><p class="label">Shop</p><ul role="list"><li><a href="#shop">All scents</a></li><li><a href="#set">Discovery set</a></li><li><a href="#finder">Find your scent</a></li></ul></div>
+        <div><p class="label">Shop</p><ul role="list"><li><a href="#shop">All fragrances</a></li><li><a href="#set">Discovery set</a></li><li><a href="#finder">Find your scent</a></li></ul></div>
         <div><p class="label">House</p><ul role="list"><li><a href="#house">Our story</a></li><li><a href="#journal">Journal</a></li><li><a href="#notes">The notes</a></li></ul></div>
         <div><p class="label">Help</p><ul role="list"><li><a href="#contact">Contact</a></li><li><a href="#contact">Shipping and returns</a></li><li><a href="#contact">Refills</a></li></ul></div>
       </div>
     </div>
-    <p class="foot__word" aria-hidden="true"><span>M</span><span>U</span><span>S</span><span>E</span></p>
-    <p class="foot__legal label"><span>© 2026 MUSE</span><span>Photography from <a href="https://unsplash.com" target="_blank" rel="noopener">Unsplash</a></span><span><a href="https://instagram.com" target="_blank" rel="noopener">Instagram</a></span></p>
+    <p class="foot__word" aria-hidden="true">MUSE</p>
+    <p class="foot__legal label"><span>© 2026 MUSE, Maison de parfum</span><span>Photography from <a href="https://unsplash.com" target="_blank" rel="noopener">Unsplash</a></span><span><a href="https://instagram.com" target="_blank" rel="noopener">Instagram</a></span></p>
   </div>
 </footer>
 
@@ -553,6 +658,7 @@
 <dialog class="search" id="search" aria-label="Search">
   <div class="search__inner wrap">
     <div class="search__bar">
+      <svg aria-hidden="true"><use href="#i-search"/></svg>
       <label class="sr-only" for="q">Search scents and stories</label>
       <input id="q" type="search" placeholder="Search a note, a mood, a name" autocomplete="off">
       <button class="search__close" type="button" data-close aria-label="Close search"><svg aria-hidden="true"><use href="#i-close"/></svg></button>
@@ -566,15 +672,16 @@
 <dialog class="bag" id="bag" aria-labelledby="bag-title">
   <div class="bag__inner">
     <div class="bag__head"><h2 class="bag__title" id="bag-title">Your bag</h2><button class="bag__close" type="button" data-close aria-label="Close bag"><svg aria-hidden="true"><use href="#i-close"/></svg></button></div>
-    <div class="bag__ship" data-bag-ship><p class="label" data-bag-ship-t>€150 away from free shipping</p><span class="bar"><i data-bag-ship-bar></i></span></div>
+    <div class="bag__ship" data-bag-ship><p class="label" data-bag-ship-t>€150 away from complimentary delivery</p><span class="bar"><i data-bag-ship-bar></i></span></div>
     <ul class="bag__items" role="list" data-bag-items></ul>
     <div class="bag__empty" data-bag-empty>
       <p class="bag__empty-t">Your bag is empty. <em>Not even a scent yet.</em></p>
-      <a class="btn btn--wine" href="#shop"><span>Find a scent</span><svg aria-hidden="true"><use href="#i-arrow"/></svg></a>
+      <a class="btn btn--dark" href="#shop"><span>Find a scent</span></a>
     </div>
     <div class="bag__foot" data-bag-foot>
       <p class="bag__sub"><span>Subtotal</span><b data-bag-sub>€0</b></p>
-      <a class="btn btn--wine bag__go" href="#checkout"><span>Checkout</span><svg aria-hidden="true"><use href="#i-arrow"/></svg></a>
+      <p class="bag__note">Two samples of your choice are added at checkout.</p>
+      <a class="btn btn--dark bag__go" href="#checkout"><span>Checkout</span><svg aria-hidden="true"><use href="#i-arrow"/></svg></a>
     </div>
   </div>
 </dialog>
@@ -596,7 +703,6 @@
   <svg class="curtain__svg" viewBox="0 0 100 100" preserveAspectRatio="none"><path data-curtain-path d="M0 100H100V100Q50 100 0 100Z"/></svg>
   <p class="curtain__word" data-curtain-word></p>
 </div>
-<div class="cursor" aria-hidden="true"><i class="cursor__dot"></i><span class="cursor__ring"><b data-cursor-label></b></span></div>
 <div class="toast" role="status" aria-live="polite" data-toast></div>
 </body>
 </html>
